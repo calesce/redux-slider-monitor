@@ -1,5 +1,5 @@
 import React, { PropTypes, findDOMNode } from 'react';
-import Slider from '../slider';
+import Slider from './Slider';
 
 export default class SliderMonitor {
   constructor() {

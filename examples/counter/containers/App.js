@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import CounterApp from './CounterApp';
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import { devTools, persistState } from 'redux-devtools';
-import { DevTools, DebugPanel, LogMonitor } from 'redux-devtools/lib/react';
+import { DevTools, DebugPanel } from 'redux-devtools/lib/react';
+import SliderMonitor from 'redux-slider-monitor';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import * as reducers from '../reducers';
@@ -24,9 +25,9 @@ export default class App extends Component {
         <Provider store={store}>
           {() => <CounterApp />}
         </Provider>
-        <DebugPanel top right bottom>
+        <DebugPanel left right bottom>
           <DevTools store={store}
-                    monitor={LogMonitor} />
+                    monitor={SliderMonitor} />
         </DebugPanel>
       </div>
     );
