@@ -196,8 +196,7 @@ export default class SliderMonitor extends Component {
 
     return (
       <div style={this.containerStyle()}>
-        {this.renderPlayButton()}
-        {this.renderPauseButton()}
+        { this.state.timer ? this.renderPauseButton() : this.renderPlayButton()}
         <div style={{ width: '70%' }}>
           <Slider
             min={0}
