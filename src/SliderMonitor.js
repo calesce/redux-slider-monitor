@@ -156,8 +156,10 @@ export default class SliderMonitor extends Component {
     return {
       fontFamily: 'monospace',
       position: 'relative',
-      padding: '1.5rem',
-      display: 'flex'
+      padding: '1.1rem',
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center'
     };
   }
 
@@ -204,7 +206,7 @@ export default class SliderMonitor extends Component {
     return (
       <div style={this.containerStyle()}>
         { this.state.timer ? this.renderPauseButton() : this.renderPlayButton()}
-        <div style={{ width: '70%' }}>
+        <div style={{ width: '90%' }}>
           <Slider
             min={0}
             max={computedStates.length - 1}
