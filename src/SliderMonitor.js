@@ -1,9 +1,15 @@
-import React, { PropTypes, findDOMNode } from 'react';
+import React, { PropTypes, findDOMNode, Component } from 'react';
 import Slider from './Slider';
 
-export default class SliderMonitor {
-  constructor() {
+export default class SliderMonitor extends Component {
+  constructor(props) {
+    super(props);
+
     window.addEventListener('keydown', ::this.handleKeyPress);
+
+    this.state = {
+      timer: undefined
+    };
   }
 
   static propTypes = {
@@ -92,12 +98,16 @@ export default class SliderMonitor {
     }
   }
 
-  jumpToState(value) {
+  handleSliderChange(value) {
+    if (this.state.timer) {
+      this.pauseReplay();
+    }
+
     this.props.jumpToState(value);
   }
 
-  replayActions() {
-    if (this.timer) {
+  startReplay() {
+    if (this.state.timer) {
       return;
     }
 
@@ -111,22 +121,70 @@ export default class SliderMonitor {
     }
 
     let counter = currentStateIndex === 0 ? 1 : currentStateIndex + 1;
-    this.timer = setInterval(() => {
+    let timer = setInterval(() => {
       this.props.jumpToState(counter);
 
       if (counter === this.props.computedStates.length - 1) {
-        clearInterval(this.timer);
-        this.timer = undefined;
+        clearInterval(this.state.timer);
+        this.setState({
+          timer: undefined
+        });
       }
       counter++;
     }, 500);
+
+    this.setState({ timer });
   }
 
   pauseReplay() {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = undefined;
+    if (this.state.timer) {
+      clearInterval(this.state.timer);
+      this.setState({
+        timer: undefined
+      });
     }
+  }
+
+  containerStyle() {
+    return {
+      fontFamily: 'monospace',
+      position: 'relative',
+      padding: '1.5rem',
+      display: 'flex'
+    };
+  }
+
+  iconStyle() {
+    return {
+      cursor: 'hand',
+      fill: 'white',
+      width: '2.3rem',
+      height: '2.3rem'
+    };
+  }
+
+  renderPlayButton() {
+    return (
+      <a onClick={::this.startReplay}>
+        <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fit
+          style={this.iconStyle()}
+        >
+          <g><path d="M8 5v14l11-7z"></path></g>
+        </svg>
+      </a>
+    );
+  }
+
+  renderPauseButton() {
+    return (
+      <a onClick={::this.pauseReplay}>
+        <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fit
+          style={this.iconStyle()}
+        >
+          <g><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></g>
+        </svg>
+      </a>
+    );
   }
 
   render() {
@@ -137,71 +195,21 @@ export default class SliderMonitor {
     }
 
     return (
-      <div style={{
-        fontFamily: 'monospace',
-        position: 'relative',
-        padding: '1rem'
-      }}>
-        <div>
-          <div style={{
-            paddingBottom: '.5rem'
-          }}>
-            <small>Press Ctrl+H to hide.</small>
-          </div>
-          <div>
-            <a onClick={::this.handleReset}
-               style={{ textDecoration: 'underline', cursor: 'hand' }}>
-              <small>Reset</small>
-            </a>
-            <br/>
-            <a onClick={::this.replayActions}
-               style={{ cursor: 'hand' }}
-            >
-               <svg viewBox="0 0 24 24"
-                preserveAspectRatio="xMidYMid meet"
-                fit
-                style={{
-                  fill: 'white',
-                  width: '2.3rem',
-                  height: '2.3rem'
-                }}>
-                  <g><path d="M8 5v14l11-7z"></path></g>
-              </svg>
-            </a>
-            <a onClick={::this.pauseReplay}
-               style={{ cursor: 'hand' }}
-            >
-               <svg viewBox="0 0 24 24"
-                preserveAspectRatio="xMidYMid meet"
-                fit
-                style={{
-                  fill: 'white',
-                  width: '2.3rem',
-                  height: '2.3rem'
-                }}>
-                <g><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></g>
-              </svg>
-            </a>
-            <div style={{
-              paddingLeft: '15rem',
-              width: '70%'
-            }}>
-              <Slider
-                min={0}
-                max={computedStates.length - 1}
-                value={currentStateIndex}
-                onChange={::this.jumpToState}
-              />
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between'
-              }}>
-                <small>{currentStateIndex}</small>
-                <small>{computedStates.length - 1}</small>
-              </div>
-            </div>
-          </div>
+      <div style={this.containerStyle()}>
+        {this.renderPlayButton()}
+        {this.renderPauseButton()}
+        <div style={{ width: '70%' }}>
+          <Slider
+            min={0}
+            max={computedStates.length - 1}
+            value={currentStateIndex}
+            onChange={::this.handleSliderChange}
+          />
         </div>
+        <a onClick={::this.handleReset}
+           style={{ textDecoration: 'underline', cursor: 'hand' }}>
+          <small>Reset</small>
+        </a>
       </div>
     );
   }
