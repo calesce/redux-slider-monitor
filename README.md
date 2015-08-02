@@ -4,7 +4,20 @@ It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider
 
 ### Installation
 
-NPM package coming soon.
+```npm install redux-slider-monitor```
+
+In your root component:
+```
+import { DevTools, DebugPanel } from 'redux-devtools';
+import SliderMonitor from 'redux-slider-monitor';
+
+<DebugPanel left right bottom>
+  <DevTools store={store}
+            monitor={SliderMonitor}
+  />
+</DebugPanel>
+
+```
 
 ### Running Examples
 
