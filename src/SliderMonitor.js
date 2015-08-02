@@ -95,6 +95,13 @@ export default class SliderMonitor extends Component {
         ...monitorState,
         isVisible: !monitorState.isVisible
       });
+    } else if (event.keyCode === 32) {
+      event.preventDefault();
+      if (this.state.timer) {
+        return this.pauseReplay();
+      }
+
+      this.startReplay();
     }
   }
 
