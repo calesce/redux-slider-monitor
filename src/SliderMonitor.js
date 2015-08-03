@@ -66,22 +66,6 @@ export default class SliderMonitor extends Component {
     }
   }
 
-  handleRollback() {
-    this.props.rollback();
-  }
-
-  handleSweep() {
-    this.props.sweep();
-  }
-
-  handleCommit() {
-    this.props.commit();
-  }
-
-  handleToggleAction(index) {
-    this.props.toggleAction(index);
-  }
-
   handleReset() {
     this.props.reset();
   }
@@ -102,6 +86,12 @@ export default class SliderMonitor extends Component {
       }
 
       this.startReplay();
+    } else if (event.keyCode === 37) { // left arrow
+      event.preventDefault();
+      this.stepLeft();
+    } else if (event.keyCode === 39) { // right arrow
+      event.preventDefault();
+      this.stepRight();
     }
   }
 
@@ -152,6 +142,22 @@ export default class SliderMonitor extends Component {
     }
   }
 
+  stepLeft() {
+    this.pauseReplay();
+
+    if (this.props.currentStateIndex !== 0) {
+      this.props.jumpToState(this.props.currentStateIndex - 1);
+    }
+  }
+
+  stepRight() {
+    this.pauseReplay();
+
+    if (this.props.currentStateIndex !== this.props.computedStates.length - 1) {
+      this.props.jumpToState(this.props.currentStateIndex + 1);
+    }
+  }
+
   containerStyle() {
     return {
       fontFamily: 'monospace',
@@ -175,10 +181,10 @@ export default class SliderMonitor extends Component {
   renderPlayButton() {
     return (
       <a onClick={::this.startReplay}>
-        <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fit
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >
-          <g><path d="M8 5v14l11-7z"></path></g>
+          <g><path d='M8 5v14l11-7z'></path></g>
         </svg>
       </a>
     );
@@ -187,10 +193,34 @@ export default class SliderMonitor extends Component {
   renderPauseButton() {
     return (
       <a onClick={::this.pauseReplay}>
-        <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" fit
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >
-          <g><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></g>
+          <g><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'></path></g>
+        </svg>
+      </a>
+    );
+  }
+
+  renderStepLeftButton() {
+    return (
+      <a onClick={::this.stepLeft}>
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
+          style={this.iconStyle()}
+        >
+          <g><path d='M15.41 16.09l-4.58-4.59 4.58-4.59-1.41-1.41-6 6 6 6z'></path></g>
+        </svg>
+      </a>
+    );
+  }
+
+  renderStepRightButton() {
+    return (
+      <a onClick={::this.stepRight}>
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
+          style={this.iconStyle()}
+        >
+          <g><path d='M8.59 16.34l4.58-4.59-4.58-4.59 1.41-1.41 6 6-6 6z'></path></g>
         </svg>
       </a>
     );
@@ -214,6 +244,8 @@ export default class SliderMonitor extends Component {
             onChange={::this.handleSliderChange}
           />
         </div>
+        { this.renderStepLeftButton() }
+        { this.renderStepRightButton() }
         <a onClick={::this.handleReset}
            style={{ textDecoration: 'underline', cursor: 'hand' }}>
           <small>Reset</small>
