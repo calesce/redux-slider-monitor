@@ -204,7 +204,8 @@ export default class Slider extends Component {
       background: 'white',
       top: '45%',
       height: '10%',
-      width: '100%'
+      width: '100%',
+      cursor: 'hand'
     };
     obj[this.posMinKey()] = min;
     obj[this.posMaxKey()] = max;

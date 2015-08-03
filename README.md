@@ -23,7 +23,7 @@ import SliderMonitor from 'redux-slider-monitor';
 
 Fire off some Redux actions. Use the slider to navigate between the state changes.
 
-Click the play/pause icons (or spacebar) to watch the state changes over time, or drag the slider to jump to a specific state.
+Click the play/pause buttons (or spacebar) to watch the state changes over time, or step backward or forward in state time with the left/right arrow buttons (or keys).
 
 ### Running Examples
 
