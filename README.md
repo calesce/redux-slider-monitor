@@ -13,7 +13,7 @@ import SliderMonitor from 'redux-slider-monitor';
 
 <DebugPanel left right bottom>
   <DevTools store={store}
-            keyboardEnabled={true}
+            keyboardEnabled
             monitor={SliderMonitor}
   />
 </DebugPanel>
