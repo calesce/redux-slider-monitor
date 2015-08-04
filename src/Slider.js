@@ -191,7 +191,7 @@ export default class Slider extends Component {
       width: '30px',
       height: '30px',
       borderRadius: '50%',
-      marginTop: '6px'
+      marginTop: '15px'
     };
     style[this.posMinKey()] = offset + 'px';
     return style;
@@ -202,7 +202,7 @@ export default class Slider extends Component {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() + ',' + this.posMaxKey() : '',
       background: 'white',
-      top: '45%',
+      top: '60%',
       height: '10%',
       width: '100%',
       cursor: 'hand'
@@ -610,16 +610,23 @@ export default class Slider extends Component {
     let handles = this.renderHandles(offset);
 
     return (
-      <div ref='slider'
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '40px'
-        }}
-        onMouseDown={this.onSliderMouseDown}
-        onClick={this.onSliderClick}>
-        {bars}
-        {handles}
+      <div>
+        <div ref='slider'
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '45px'
+          }}
+          onMouseDown={this.onSliderMouseDown}
+          onClick={this.onSliderClick}
+        >
+          {bars}
+          {handles}
+        </div>
+        <small style={{ bottom: '0%', display: 'flex', justifyContent: 'space-between'}}>
+          <div>{this.props.min}</div>
+          <div>{this.props.max}</div>
+        </small>
       </div>
     );
   }
