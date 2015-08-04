@@ -5,7 +5,9 @@ export default class SliderMonitor extends Component {
   constructor(props) {
     super(props);
 
-    window.addEventListener('keydown', ::this.handleKeyPress);
+    if (props.keyboardEnabled) {
+      window.addEventListener('keydown', ::this.handleKeyPress);
+    }
 
     this.state = {
       timer: undefined
@@ -70,15 +72,19 @@ export default class SliderMonitor extends Component {
     this.props.reset();
   }
 
-  handleKeyPress(event) {
+  toggleHidden() {
     const { monitorState } = this.props;
 
+    this.props.setMonitorState({
+      ...monitorState,
+      isVisible: !monitorState.isVisible
+    });
+  }
+
+  handleKeyPress(event) {
     if (event.ctrlKey && event.keyCode === 72) { // Ctrl+H
       event.preventDefault();
-      this.props.setMonitorState({
-        ...monitorState,
-        isVisible: !monitorState.isVisible
-      });
+      ::this.toggleHidden();
     } else if (event.keyCode === 32) {
       event.preventDefault();
       if (this.state.timer) {
@@ -224,6 +230,13 @@ export default class SliderMonitor extends Component {
         </svg>
       </a>
     );
+  }
+
+  renderHideButton() {
+    return (<a onClick={::this.toggleHidden}
+              style={{ textDecoration: 'underline', cursor: 'hand' }}>
+              <small>Hide</small>
+           </a>);
   }
 
   render() {
