@@ -9,13 +9,13 @@ It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider
 ```npm install redux-slider-monitor```
 
 In your root component:
-```
+```javascript
 import { DevTools, DebugPanel } from 'redux-devtools';
 import SliderMonitor from 'redux-slider-monitor';
 
 <DebugPanel left right bottom>
   <DevTools store={store}
-            keyboardEnabled
+            keyboardEnabled // this is optional
             monitor={SliderMonitor}
   />
 </DebugPanel>
