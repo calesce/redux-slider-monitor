@@ -598,6 +598,19 @@ export default class Slider extends Component {
     }
   }
 
+  renderValue = (offset) => {
+    const { value, min, max } = this.props;
+    let style = {
+      position: 'absolute',
+      left: offset + 10
+    };
+
+    if (value !== min && value !== max) {
+      return <small style={style}>{value}</small>;
+    }
+    return <small></small>;
+  }
+
   render() {
     let offset = this.tempArray;
     let value = this.state.value;
@@ -608,6 +621,7 @@ export default class Slider extends Component {
 
     let bars = this.props.withBars ? this.renderBars(offset) : null;
     let handles = this.renderHandles(offset);
+    let currentValue = this.renderValue(this.calcOffset(this.props.value, 0));
 
     return (
       <div>
@@ -615,7 +629,7 @@ export default class Slider extends Component {
           style={{
             position: 'relative',
             width: '100%',
-            height: '45px'
+            height: '50px'
           }}
           onMouseDown={this.onSliderMouseDown}
           onClick={this.onSliderClick}
@@ -623,10 +637,11 @@ export default class Slider extends Component {
           {bars}
           {handles}
         </div>
-        <small style={{ bottom: '0%', display: 'flex', justifyContent: 'space-between'}}>
-          <div>{this.props.min}</div>
-          <div>{this.props.max}</div>
-        </small>
+        <div style={{ position: 'relative' }}>
+          <small style={{ left: 0, position: 'absolute' }}>{this.props.min}</small>
+          {currentValue}
+          <small style={{ right: 0, position: 'absolute' }}>{this.props.max}</small>
+        </div>
       </div>
     );
   }
