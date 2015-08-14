@@ -95,26 +95,6 @@ export default class Slider extends Component {
     return x !== null && x.length === 1 ? x[0] : x;
   }
 
-  componentWillReceiveProps = (newProps) => {
-    let value = this.orChildrenCount(this.ensureArray(newProps.value), this.state.value);
-
-    // ensure the array keeps the same size as `value`
-    this.tempArray = value.slice();
-
-    for (let i = 0; i < value.length; i++) {
-      this.state.value[i] = this.trimAlignValue(value[i], newProps);
-    }
-    if (this.state.value.length > value.length) {
-      this.state.value.length = value.length;
-    }
-
-    // If an upperBound has not yet been determined (due to the component being hidden
-    // during the mount event, or during the last resize), then calculate it now
-    if (this.state.upperBound === 0) {
-      this.handleResize();
-    }
-  }
-
   orChildrenCount = (value, defaultValue) => {
     let count = Children.count(this.props.children);
     switch (count) {
@@ -133,37 +113,25 @@ export default class Slider extends Component {
   }
 
   componentDidMount = () => {
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
-  }
+    let slider = React.findDOMNode(this.refs.slider);
+    let handle = React.findDOMNode(this.refs.handle0);
+    let rect = slider.getBoundingClientRect();
 
-  componentWillUnmount = () => {
-    window.removeEventListener('resize', this.handleResize);
+    let size = this.sizeKey();
+
+    let sliderMax = rect[this.posMaxKey()];
+    let sliderMin = rect[this.posMinKey()];
+
+    this.setState({
+      upperBound: slider[size] - handle[size],
+      sliderLength: Math.abs(sliderMax - sliderMin),
+      handleSize: handle[size],
+      sliderStart: this.props.handleResize ? sliderMax : sliderMin
+    });
   }
 
   getValue = () => {
     return this.undoEnsureArray(this.state.value);
-  }
-
-  handleResize = () => {
-    // setTimeout of 0 gives element enough time to have assumed its new size if it is being resized
-    window.setTimeout(function handleResizeBlock() {
-      let slider = this.refs.slider.getDOMNode();
-      let handle = this.refs.handle0.getDOMNode();
-      let rect = slider.getBoundingClientRect();
-
-      let size = this.sizeKey();
-
-      let sliderMax = rect[this.posMaxKey()];
-      let sliderMin = rect[this.posMinKey()];
-
-      this.setState({
-        upperBound: slider[size] - handle[size],
-        sliderLength: Math.abs(sliderMax - sliderMin),
-        handleSize: handle[size],
-        sliderStart: this.props.handleResize ? sliderMax : sliderMin
-      });
-    }.bind(this), 0);
   }
 
   // calculates the offset of a handle in pixels based on its value.
@@ -179,13 +147,11 @@ export default class Slider extends Component {
     return ratio * (this.props.max - this.props.min) + this.props.min;
   }
 
-  buildHandleStyle = (offset, i) => {
+  buildHandleStyle = (i) => {
     let style = {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() : '',
       zIndex: this.state.zIndices.indexOf(i) + 1,
-      fontSize: '0.9em',
-      textAlign: 'center',
       backgroundColor: 'white',
       cursor: 'hand',
       width: '30px',
@@ -193,11 +159,11 @@ export default class Slider extends Component {
       borderRadius: '50%',
       marginTop: '15px'
     };
-    style[this.posMinKey()] = offset + 'px';
+    style[this.posMinKey()] = (this.props.value / this.props.max * 100) - 1 + '%';
     return style;
   }
 
-  buildBarStyle = (min, max) => {
+  buildBarStyle = () => {
     let obj = {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() + ',' + this.posMaxKey() : '',
@@ -207,8 +173,6 @@ export default class Slider extends Component {
       width: '100%',
       cursor: 'hand'
     };
-    obj[this.posMinKey()] = min;
-    obj[this.posMaxKey()] = max;
     return obj;
   }
 
@@ -521,12 +485,12 @@ export default class Slider extends Component {
     );
   }
 
-  renderHandles = (offset) => {
-    let length = offset.length;
+  renderHandles = () => {
+    let length = 1;
 
     let styles = this.tempArray;
     for (let i = 0; i < length; i++) {
-      styles[i] = this.buildHandleStyle(offset[i], i);
+      styles[i] = this.buildHandleStyle(i);
     }
 
     let res = this.tempArray;
@@ -543,28 +507,15 @@ export default class Slider extends Component {
     return res;
   }
 
-  renderBar = (i, offsetFrom, offsetTo) => {
+  renderBar = () => {
     return (
       <div
-        key={'bar' + i}
-        ref={'bar' + i}
-        style={this.buildBarStyle(offsetFrom, this.state.upperBound - offsetTo)}
+        key={'bar' + 0}
+        ref={'bar' + 0}
+        style={this.buildBarStyle()}
         >
       </div>
     );
-  }
-
-  renderBars = (offset) => {
-    let bars = [];
-    let lastIndex = offset.length - 1;
-
-    bars.push(this.renderBar(0, 0, offset[0]));
-
-    for (let i = 0; i < lastIndex; i++) {
-      bars.push(this.renderBar(i + 1, offset[i], offset[i + 1]));
-    }
-
-    return bars;
   }
 
   onSliderMouseDown = (e) => {
@@ -598,11 +549,11 @@ export default class Slider extends Component {
     }
   }
 
-  renderValue = (offset) => {
+  renderValue = () => {
     const { value, min, max } = this.props;
     let style = {
       position: 'absolute',
-      left: offset + 10
+      left: (this.props.value / this.props.max * 100) + '%'
     };
 
     if (value !== min && value !== max) {
@@ -612,16 +563,9 @@ export default class Slider extends Component {
   }
 
   render() {
-    let offset = this.tempArray;
-    let value = this.state.value;
-    let l = value.length;
-    for (let i = 0; i < l; i++) {
-      offset[i] = this.calcOffset(value[i], i);
-    }
-
-    let bars = this.props.withBars ? this.renderBars(offset) : null;
-    let handles = this.renderHandles(offset);
-    let currentValue = this.renderValue(this.calcOffset(this.props.value, 0));
+    let bars = this.props.withBars ? this.renderBar() : null;
+    let handles = this.renderHandles();
+    let currentValue = this.renderValue();
 
     return (
       <div>
