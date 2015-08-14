@@ -173,7 +173,8 @@ export default class SliderMonitor extends Component {
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
-      background: 'black'
+      background: 'black',
+      WebkitUserSelect: 'none', MozUserSelect: 'none', MsUserSelect: 'none'
     };
   }
 
