@@ -140,6 +140,65 @@ export default class SliderMonitor extends Component {
     this.setState({ timer });
   }
 
+  startRealtimeReplay() {
+    if (this.state.timer) {
+      return;
+    }
+
+    if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
+      this.props.jumpToState(0);
+
+      this.loop(0);
+    } else {
+      this.loop(this.props.currentStateIndex);
+    }
+  }
+
+  loop = (index) => {
+    const { computedStates, timestamps } = this.props;
+    let currentTimestamp = Date.now();
+    let timestampDiff = timestamps[index + 1] - timestamps[index];
+
+    let aLoop = () => {
+      if (this.props.currentStateIndex === computedStates.length - 1) {
+        return this.pauseRealTimeReplay();
+      }
+
+      let replayDiff = Date.now() - currentTimestamp;
+
+      if (replayDiff >= timestampDiff) {
+        this.props.jumpToState(this.props.currentStateIndex + 1);
+        timestampDiff = timestamps[this.props.currentStateIndex + 1] - timestamps[this.props.currentStateIndex];
+        currentTimestamp = Date.now();
+
+        this.setState({
+          timer: requestAnimationFrame(aLoop)
+        });
+      } else {
+        this.setState({
+          timer: requestAnimationFrame(aLoop)
+        });
+      }
+    };
+
+    if (index !== computedStates.length - 1) {
+      this.setState({
+        timer: requestAnimationFrame(aLoop)
+      });
+    }
+  }
+
+  pauseRealTimeReplay() {
+    if (this.state.timer) {
+      cancelAnimationFrame(this.state.timer);
+      this.setState({
+        timer: undefined,
+        currentTimestamp: undefined,
+        targetTimestamp: undefined
+      });
+    }
+  }
+
   pauseReplay() {
     if (this.state.timer) {
       clearInterval(this.state.timer);
@@ -188,8 +247,10 @@ export default class SliderMonitor extends Component {
   }
 
   renderPlayButton() {
+    let play = this.props.realtime ? ::this.startRealtimeReplay : ::this.startReplay;
+
     return (
-      <a onClick={::this.startReplay}>
+      <a onClick={play}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >
@@ -200,8 +261,10 @@ export default class SliderMonitor extends Component {
   }
 
   renderPauseButton() {
+    let pause = this.props.realtime ? ::this.pauseRealTimeReplay : ::this.pauseReplay;
+
     return (
-      <a onClick={::this.pauseReplay}>
+      <a onClick={pause}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >

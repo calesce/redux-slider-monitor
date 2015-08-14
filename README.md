@@ -16,6 +16,7 @@ import SliderMonitor from 'redux-slider-monitor';
 <DebugPanel left right bottom>
   <DevTools store={store}
             keyboardEnabled // this is optional
+            realtime // optional, try out replaying your actions with the same time intervals in which they were dispatched!
             monitor={SliderMonitor}
   />
 </DebugPanel>
