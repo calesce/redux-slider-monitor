@@ -1,6 +1,6 @@
 {
   "name": "redux-slider-monitor",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A custom monitor for Redux DevTools using a draggable slider and play/pause buttons",
   "main": "lib/SliderMonitor.js",
   "scripts": {
@@ -31,11 +31,12 @@
     "rimraf": "^2.3.4"
   },
   "peerDependencies": {
-    "redux": "^1.0.0 || 1.0.0-rc"
+    "redux": "^1.0.0 || 1.0.0-rc",
+    "redux-devtools": "^1.0.2"
   },
   "dependencies": {
-    "react-redux": "^0.5.0",
+    "react-redux": "^0.8.2",
     "redux": "^1.0.0-rc",
-    "redux-devtools": "^0.2.0"
+    "redux-devtools": "^1.0.2"
   }
 }

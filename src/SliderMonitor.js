@@ -1,5 +1,6 @@
 import React, { PropTypes, findDOMNode, Component } from 'react';
 import Slider from './Slider';
+import * as themes from 'redux-devtools/lib/react/themes';
 
 export default class SliderMonitor extends Component {
   constructor(props) {
@@ -171,7 +172,8 @@ export default class SliderMonitor extends Component {
       padding: '1.1rem',
       display: 'flex',
       justifyContent: 'space-around',
-      alignItems: 'center'
+      alignItems: 'center',
+      background: 'black'
     };
   }
 
