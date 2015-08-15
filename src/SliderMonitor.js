@@ -33,7 +33,8 @@ export default class SliderMonitor extends Component {
 
   static defaultProps = {
     select: (state) => state,
-    monitorState: { isVisible: true }
+    monitorState: { isVisible: true },
+    theme: 'nicinabox'
   };
 
   componentWillReceiveProps(nextProps) {
@@ -223,7 +224,7 @@ export default class SliderMonitor extends Component {
     }
   }
 
-  containerStyle() {
+  containerStyle(theme) {
     return {
       fontFamily: 'monospace',
       position: 'relative',
@@ -231,27 +232,27 @@ export default class SliderMonitor extends Component {
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
-      background: 'black',
+      background: theme.base00,
       WebkitUserSelect: 'none', MozUserSelect: 'none', MsUserSelect: 'none'
     };
   }
 
-  iconStyle() {
+  iconStyle(theme) {
     return {
       cursor: 'hand',
-      fill: 'white',
+      fill: theme.base06,
       width: '2.3rem',
       height: '2.3rem'
     };
   }
 
-  renderPlayButton() {
+  renderPlayButton(theme) {
     let play = this.props.realtime ? ::this.startRealtimeReplay : ::this.startReplay;
 
     return (
       <a onClick={play}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+          style={this.iconStyle(theme)}
         >
           <g><path d='M8 5v14l11-7z'></path></g>
         </svg>
@@ -259,13 +260,13 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  renderPauseButton() {
+  renderPauseButton(theme) {
     let pause = this.props.realtime ? ::this.pauseRealtimeReplay : ::this.pauseReplay;
 
     return (
       <a onClick={pause}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+          style={this.iconStyle(theme)}
         >
           <g><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'></path></g>
         </svg>
@@ -273,11 +274,11 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  renderStepLeftButton() {
+  renderStepLeftButton(theme) {
     return (
       <a onClick={::this.stepLeft}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+          style={this.iconStyle(theme)}
         >
           <g><path d='M15.41 16.09l-4.58-4.59 4.58-4.59-1.41-1.41-6 6 6 6z'></path></g>
         </svg>
@@ -285,11 +286,11 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  renderStepRightButton() {
+  renderStepRightButton(theme) {
     return (
       <a onClick={::this.stepRight}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+          style={this.iconStyle(theme)}
         >
           <g><path d='M8.59 16.34l4.58-4.59-4.58-4.59 1.41-1.41 6 6-6 6z'></path></g>
         </svg>
@@ -297,9 +298,9 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  renderHideButton() {
+  renderHideButton(theme) {
     return (<a onClick={::this.toggleHidden}
-              style={{ textDecoration: 'underline', cursor: 'hand' }}>
+              style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06 }}>
               <small>Hide</small>
            </a>);
   }
@@ -307,23 +308,34 @@ export default class SliderMonitor extends Component {
   render() {
     const { monitorState, currentStateIndex, computedStates } = this.props;
 
+    let theme;
+    if (typeof this.props.theme === 'string') {
+      if (typeof themes[this.props.theme] !== 'undefined') {
+        theme = themes[this.props.theme];
+      } else {
+        theme = themes.nicinabox;
+      }
+    } else {
+      theme = this.props.theme;
+    }
     if (!monitorState.isVisible) {
       return null;
     }
 
     return (
-      <div style={this.containerStyle()}>
-        { this.state.timer ? this.renderPauseButton() : this.renderPlayButton() }
+      <div style={this.containerStyle(theme)}>
+        { this.state.timer ? this.renderPauseButton(theme) : this.renderPlayButton(theme) }
         <div style={{ width: '80%', height: '100%' }}>
           <Slider
             min={0}
             max={computedStates.length - 1}
             value={currentStateIndex}
             onChange={::this.handleSliderChange}
+            theme={theme}
           />
         </div>
-        { this.renderStepLeftButton() }
-        { this.renderStepRightButton() }
+        { this.renderStepLeftButton(theme) }
+        { this.renderStepRightButton(theme) }
         <a onClick={::this.handleReset}
            style={{ textDecoration: 'underline', cursor: 'hand' }}>
           <small>Reset</small>

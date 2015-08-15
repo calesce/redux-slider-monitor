@@ -152,7 +152,7 @@ export default class Slider extends Component {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() : '',
       zIndex: this.state.zIndices.indexOf(i) + 1,
-      backgroundColor: 'white',
+      background: this.props.theme.base06,
       cursor: 'hand',
       width: '30px',
       height: '30px',
@@ -167,7 +167,7 @@ export default class Slider extends Component {
     let obj = {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() + ',' + this.posMaxKey() : '',
-      background: 'white',
+      background: this.props.theme.base06,
       top: '60%',
       height: '10%',
       width: '100%',
