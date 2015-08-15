@@ -130,13 +130,15 @@ export default class SliderMonitor extends Component {
       this.props.jumpToState(counter);
 
       if (counter === this.props.computedStates.length - 1) {
-        clearInterval(this.timer);
-        this.timer = undefined;
+        clearInterval(this.state.timer);
+        this.setState({
+          timer: undefined
+        });
       }
       counter++;
     }, 500);
 
-    this.timer = timer;
+    this.setState({ timer });
   }
 
   startRealtimeReplay() {
