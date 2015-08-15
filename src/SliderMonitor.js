@@ -193,9 +193,7 @@ export default class SliderMonitor extends Component {
     if (this.state.timer) {
       cancelAnimationFrame(this.state.timer);
       this.setState({
-        timer: undefined,
-        currentTimestamp: undefined,
-        targetTimestamp: undefined
+        timer: undefined
       });
     }
   }
