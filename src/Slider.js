@@ -159,7 +159,7 @@ export default class Slider extends Component {
       borderRadius: '50%',
       marginTop: '15px'
     };
-    style[this.posMinKey()] = (this.props.value / this.props.max * 100) - 1 + '%';
+    style[this.posMinKey()] = (this.props.value / this.props.max * 100) - 0.8 + '%';
     return style;
   }
 

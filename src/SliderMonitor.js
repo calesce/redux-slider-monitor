@@ -86,17 +86,18 @@ export default class SliderMonitor extends Component {
     if (event.ctrlKey && event.keyCode === 72) { // Ctrl+H
       event.preventDefault();
       ::this.toggleHidden();
-    } else if (event.keyCode === 32) {
+    } else if (event.ctrlKey && event.keyCode === 74) { // Ctrl+K
       event.preventDefault();
+
       if (this.state.timer) {
-        return this.pauseReplay();
+        return this.props.realtime ? ::this.pauseRealtimeReplay() : ::this.pauseReplay();
       }
 
-      this.startReplay();
-    } else if (event.keyCode === 37) { // left arrow
+      return this.props.realtime ? ::this.startRealtimeReplay() : ::this.startReplay();
+    } else if (event.shiftKey && event.keyCode === 219) { // [
       event.preventDefault();
       this.stepLeft();
-    } else if (event.keyCode === 39) { // right arrow
+    } else if (event.shiftKey && event.keyCode === 221) { // ]
       event.preventDefault();
       this.stepRight();
     }
@@ -129,15 +130,13 @@ export default class SliderMonitor extends Component {
       this.props.jumpToState(counter);
 
       if (counter === this.props.computedStates.length - 1) {
-        clearInterval(this.state.timer);
-        this.setState({
-          timer: undefined
-        });
+        clearInterval(this.timer);
+        this.timer = undefined;
       }
       counter++;
     }, 500);
 
-    this.setState({ timer });
+    this.timer = timer;
   }
 
   startRealtimeReplay() {
@@ -148,20 +147,20 @@ export default class SliderMonitor extends Component {
     if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
       this.props.jumpToState(0);
 
-      this.loop(0);
+      ::this.loop(0);
     } else {
-      this.loop(this.props.currentStateIndex);
+      ::this.loop(this.props.currentStateIndex);
     }
   }
 
-  loop = (index) => {
+  loop(index) {
     const { computedStates, timestamps } = this.props;
     let currentTimestamp = Date.now();
     let timestampDiff = timestamps[index + 1] - timestamps[index];
 
     let aLoop = () => {
       if (this.props.currentStateIndex === computedStates.length - 1) {
-        return this.pauseRealTimeReplay();
+        return this.pauseRealtimeReplay();
       }
 
       let replayDiff = Date.now() - currentTimestamp;
@@ -188,7 +187,7 @@ export default class SliderMonitor extends Component {
     }
   }
 
-  pauseRealTimeReplay() {
+  pauseRealtimeReplay() {
     if (this.state.timer) {
       cancelAnimationFrame(this.state.timer);
       this.setState({
@@ -261,7 +260,7 @@ export default class SliderMonitor extends Component {
   }
 
   renderPauseButton() {
-    let pause = this.props.realtime ? ::this.pauseRealTimeReplay : ::this.pauseReplay;
+    let pause = this.props.realtime ? ::this.pauseRealtimeReplay : ::this.pauseReplay;
 
     return (
       <a onClick={pause}>
@@ -314,7 +313,7 @@ export default class SliderMonitor extends Component {
 
     return (
       <div style={this.containerStyle()}>
-        { this.state.timer ? this.renderPauseButton() : this.renderPlayButton()}
+        { this.state.timer ? this.renderPauseButton() : this.renderPlayButton() }
         <div style={{ width: '80%', height: '100%' }}>
           <Slider
             min={0}

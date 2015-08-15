@@ -26,6 +26,7 @@ export default class App extends Component {
         <DebugPanel left right bottom>
           <DevTools store={store}
                     realtime
+                    keyboardEnabled
                     monitor={SliderMonitor} />
         </DebugPanel>
       </div>
