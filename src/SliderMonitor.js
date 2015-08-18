@@ -11,7 +11,8 @@ export default class SliderMonitor extends Component {
     }
 
     this.state = {
-      timer: undefined
+      timer: undefined,
+      replaySpeed: 200
     };
   }
 
@@ -95,10 +96,10 @@ export default class SliderMonitor extends Component {
       }
 
       return this.props.realtime ? ::this.startRealtimeReplay() : ::this.startReplay();
-    } else if (event.shiftKey && event.keyCode === 219) { // [
+    } else if (event.ctrlKey && event.keyCode === 219) { // [
       event.preventDefault();
       this.stepLeft();
-    } else if (event.shiftKey && event.keyCode === 221) { // ]
+    } else if (event.ctrlKey && event.keyCode === 221) { // ]
       event.preventDefault();
       this.stepRight();
     }
@@ -137,7 +138,7 @@ export default class SliderMonitor extends Component {
         });
       }
       counter++;
-    }, 500);
+    }, this.state.replaySpeed);
 
     this.setState({ timer });
   }

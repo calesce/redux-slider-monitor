@@ -5,7 +5,6 @@ export default class Slider extends Component {
     super(props);
 
     let value = this.orChildrenCount(this.ensureArray(this.props.value), this.ensureArray(this.props.defaultValue));
-
     // reused throughout the component to store results of iterations over `value`
     this.tempArray = value.slice();
 
@@ -38,7 +37,6 @@ export default class Slider extends Component {
       PropTypes.arrayOf(PropTypes.number)
     ]),
     orientation: PropTypes.oneOf(['horizontal', 'vertical']),
-    withBars: PropTypes.bool,
     disabled: PropTypes.bool,
     snapDragDisabled: PropTypes.bool,
     onBeforeChange: PropTypes.func,
@@ -54,7 +52,6 @@ export default class Slider extends Component {
     minDistance: 0,
     defaultValue: 0,
     orientation: 'horizontal',
-    withBars: true,
     disabled: false,
     snapDragDisabled: false
   };
@@ -114,7 +111,7 @@ export default class Slider extends Component {
 
   componentDidMount = () => {
     let slider = React.findDOMNode(this.refs.slider);
-    let handle = React.findDOMNode(this.refs.handle0);
+    let handle = React.findDOMNode(this.refs.handle);
     let rect = slider.getBoundingClientRect();
 
     let size = this.sizeKey();
@@ -147,33 +144,32 @@ export default class Slider extends Component {
     return ratio * (this.props.max - this.props.min) + this.props.min;
   }
 
-  buildHandleStyle = (i) => {
-    let style = {
+  buildHandleStyle = (offset) => {
+    return {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() : '',
-      zIndex: this.state.zIndices.indexOf(i) + 1,
+      zIndex: 1,
       background: this.props.theme.base06,
       cursor: 'hand',
-      width: '30px',
-      height: '30px',
+      width: '25px',
+      height: '25px',
       borderRadius: '50%',
-      marginTop: '15px'
+      marginTop: '20px',
+      [this.posMinKey()]: offset
     };
-    style[this.posMinKey()] = (this.props.value / this.props.max * 100) - 0.8 + '%';
-    return style;
   }
 
   buildBarStyle = () => {
-    let obj = {
+    return {
       position: 'absolute',
       willChange: this.state.index >= 0 ? this.posMinKey() + ',' + this.posMaxKey() : '',
       background: this.props.theme.base06,
       top: '60%',
       height: '10%',
-      width: '100%',
+      width: '98%',
+      left: 7,
       cursor: 'hand'
     };
-    return obj;
   }
 
   getClosestIndex = (pixelOffset) => {
@@ -351,17 +347,14 @@ export default class Slider extends Component {
   move = (position) => {
     this.hasMoved = true;
 
-    let props = this.props;
-    let state = this.state;
-    let index = state.index;
-
-    let value = state.value;
+    let { max, min } = this.props;
+    let { index, value, startValue, sliderLength, handleSize } = this.state;
     let oldValue = value[index];
 
-    let diffPosition = position - state.startPosition;
+    let diffPosition = position - this.state.startPosition;
 
-    let diffValue = diffPosition / (state.sliderLength - state.handleSize) * (props.max - props.min);
-    let newValue = this.trimAlignValue(state.startValue + diffValue);
+    let diffValue = diffPosition / (sliderLength - handleSize) * (max - min);
+    let newValue = this.trimAlignValue(startValue + diffValue);
 
     value[index] = newValue;
 
@@ -417,27 +410,19 @@ export default class Slider extends Component {
   }
 
   orthogonalAxisKey = () => {
-    let orientation = this.props.orientation;
-    if (orientation === 'horizontal') return 'Y';
-    if (orientation === 'vertical') return 'X';
+    return this.props.orientation === 'horizontal' ? 'Y' : 'X';
   }
 
   posMinKey = () => {
-    let orientation = this.props.orientation;
-    if (orientation === 'horizontal') return 'left';
-    if (orientation === 'vertical') return 'top';
+    return this.props.orientation === 'horizontal' ? 'left' : 'top';
   }
 
   posMaxKey = () => {
-    let orientation = this.props.orientation;
-    if (orientation === 'horizontal') return 'right';
-    if (orientation === 'vertical') return 'bottom';
+    return this.props.orientation === 'horizontal' ? 'right' : 'bottom';
   }
 
   sizeKey = () => {
-    let orientation = this.props.orientation;
-    if (orientation === 'horizontal') return 'clientWidth';
-    if (orientation === 'vertical') return 'clientHeight';
+    return this.props.orientation === 'horizontal' ? 'clientWidth' : 'clientHeight';
   }
 
   trimAlignValue = (val, props) => {
@@ -471,51 +456,23 @@ export default class Slider extends Component {
     return parseFloat(alignValue.toFixed(5));
   }
 
-  renderHandle = (style, child, i) => {
+  renderHandle = (child) => {
+    let offset = this.calcOffset(this.props.value);
+
     return (
       <div
-        ref={'handle' + i}
-        key={'handle' + i}
-        style={style}
-        onMouseDown={this.createOnMouseDown(i)}
-        onTouchStart={this.createOnTouchStart(i)}
+        ref={'handle'} key={'handle'}
+        style={this.buildHandleStyle(offset)}
+        onMouseDown={this.createOnMouseDown(0)}
+        onTouchStart={this.createOnTouchStart(0)}
       >
         {child}
       </div>
     );
   }
 
-  renderHandles = () => {
-    let length = 1;
-
-    let styles = this.tempArray;
-    for (let i = 0; i < length; i++) {
-      styles[i] = this.buildHandleStyle(i);
-    }
-
-    let res = this.tempArray;
-    let renderHandle = this.renderHandle;
-    if (Children.count(this.props.children) > 0) {
-      Children.forEach(this.props.children, function childrenForEach(child, i) {
-        res[i] = renderHandle(styles[i], child, i);
-      });
-    } else {
-      for (let i = 0; i < length; i++) {
-        res[i] = renderHandle(styles[i], null, i);
-      }
-    }
-    return res;
-  }
-
   renderBar = () => {
-    return (
-      <div
-        key={'bar' + 0}
-        ref={'bar' + 0}
-        style={this.buildBarStyle()}
-        >
-      </div>
-    );
+    return <div key={'bar'} ref={'bar'} style={this.buildBarStyle()}></div>;
   }
 
   onSliderMouseDown = (e) => {
@@ -553,7 +510,7 @@ export default class Slider extends Component {
     const { value, min, max } = this.props;
     let style = {
       position: 'absolute',
-      left: (this.props.value / this.props.max * 100) + '%'
+      left: this.calcOffset(value) + 7
     };
 
     if (value !== min && value !== max) {
@@ -563,8 +520,8 @@ export default class Slider extends Component {
   }
 
   render() {
-    let bars = this.props.withBars ? this.renderBar() : null;
-    let handles = this.renderHandles();
+    let bars = this.renderBar();
+    let handle = this.renderHandle(null);
     let currentValue = this.renderValue();
 
     return (
@@ -573,18 +530,19 @@ export default class Slider extends Component {
           style={{
             position: 'relative',
             width: '100%',
-            height: '50px'
+            height: '50px',
+            marginBottom: '12px'
           }}
           onMouseDown={this.onSliderMouseDown}
           onClick={this.onSliderClick}
         >
           {bars}
-          {handles}
+          {handle}
         </div>
         <div style={{ position: 'relative' }}>
-          <small style={{ left: 0, position: 'absolute' }}>{this.props.min}</small>
+          <small style={{ left: 7, position: 'absolute' }}>{this.props.min}</small>
           {currentValue}
-          <small style={{ right: 0, position: 'absolute' }}>{this.props.max}</small>
+          <small style={{ right: 5, position: 'absolute' }}>{this.props.max}</small>
         </div>
       </div>
     );
