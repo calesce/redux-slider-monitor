@@ -510,7 +510,7 @@ export default class Slider extends Component {
     const { value, min, max } = this.props;
     let style = {
       position: 'absolute',
-      left: this.calcOffset(value) + 7
+      left: this.calcOffset(value) + 6
     };
 
     if (value !== min && value !== max) {
@@ -539,7 +539,7 @@ export default class Slider extends Component {
           {bars}
           {handle}
         </div>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', bottom: 10 }}>
           <small style={{ left: 7, position: 'absolute' }}>{this.props.min}</small>
           {currentValue}
           <small style={{ right: 5, position: 'absolute' }}>{this.props.max}</small>
