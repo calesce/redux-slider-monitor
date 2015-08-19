@@ -23,6 +23,7 @@ import SliderMonitor from 'redux-slider-monitor';
             monitor={SliderMonitor}
   />
 </DebugPanel>
+```
 
 Dispatch some Redux actions. Use the slider to navigate between the state changes.
 
