@@ -8,6 +8,10 @@ It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider
 
 ```npm install redux-slider-monitor```
 
+```
+
+### Usage
+
 In your root component:
 ```javascript
 import { DevTools, DebugPanel } from 'redux-devtools';
@@ -15,19 +19,21 @@ import SliderMonitor from 'redux-slider-monitor';
 
 <DebugPanel left right bottom>
   <DevTools store={store}
-            keyboardEnabled // this is optional
-            realtime // optional, try out replaying your actions with the same time intervals in which they were dispatched!
+            keyboardEnabled // if you want keyboard shortcuts
             monitor={SliderMonitor}
   />
 </DebugPanel>
 
-```
+Dispatch some Redux actions. Use the slider to navigate between the state changes.
 
-### Usage
+Click the play/pause buttons to watch the state changes over time, or step backward or forward in state time with the left/right arrow buttons. Change replay speeds with the ```1x``` button, and "Live" will replay actions with the same time intervals in which they originally were dispatched.
 
-Fire off some Redux actions. Use the slider to navigate between the state changes.
+## Keyboard shortcuts
 
-Click the play/pause buttons (or spacebar) to watch the state changes over time, or step backward or forward in state time with the left/right arrow buttons (or keys).
+```ctrl+h```: toggle hiding the monitor
+```ctrl+j```: play/pause
+```ctrl+[```: step backward
+```ctrl+]```: step forward
 
 ### Running Examples
 
@@ -43,7 +49,6 @@ npm install
 npm start
 open http://localhost:3000
 ```
-
 
 ### License
 
