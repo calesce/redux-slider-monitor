@@ -8,8 +8,6 @@ It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider
 
 ```npm install redux-slider-monitor```
 
-```
-
 ### Usage
 
 In your root component:
