@@ -114,6 +114,10 @@ export default class SliderMonitor extends Component {
   }
 
   startReplay() {
+    if (!this.state.timer) {
+      return;
+    }
+
     let currentStateIndex;
     if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
       this.props.jumpToState(0);
@@ -141,6 +145,10 @@ export default class SliderMonitor extends Component {
   }
 
   startRealtimeReplay() {
+    if (!this.state.timer) {
+      return;
+    }
+
     if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
       this.props.jumpToState(0);
 
