@@ -114,7 +114,7 @@ export default class SliderMonitor extends Component {
   }
 
   startReplay() {
-    if (!this.state.timer) {
+    if (this.state.timer) {
       return;
     }
 
@@ -145,7 +145,7 @@ export default class SliderMonitor extends Component {
   }
 
   startRealtimeReplay() {
-    if (!this.state.timer) {
+    if (this.state.timer) {
       return;
     }
 
