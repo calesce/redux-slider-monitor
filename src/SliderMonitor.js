@@ -114,7 +114,7 @@ export default class SliderMonitor extends Component {
   }
 
   startReplay() {
-    if (!this.state.timer) {
+    if (this.props.computedStates.length < 2) {
       return;
     }
 
@@ -128,7 +128,7 @@ export default class SliderMonitor extends Component {
     }
 
     let speed = this.state.replaySpeed === '1x' ? 500 : 200;
-    let counter = currentStateIndex === 0 ? 1 : currentStateIndex + 1;
+    let counter = currentStateIndex + 1;
     let timer = setInterval(() => {
       this.props.jumpToState(counter);
 
@@ -145,7 +145,7 @@ export default class SliderMonitor extends Component {
   }
 
   startRealtimeReplay() {
-    if (!this.state.timer) {
+    if (this.props.computedStates.length < 2) {
       return;
     }
 
@@ -192,7 +192,7 @@ export default class SliderMonitor extends Component {
     }
   }
 
-  pauseReplay(cb) {
+  pauseReplay = (cb) => {
     if (this.state.timer) {
       cancelAnimationFrame(this.state.timer);
       clearInterval(this.state.timer);
@@ -284,11 +284,9 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  renderPauseButton(theme) {
-    let pause = ::this.pauseReplay;
-
+  renderPauseButton = (theme) => {
     return (
-      <a onClick={pause}>
+      <a onClick={this.pauseReplay}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle(theme)}
         >
