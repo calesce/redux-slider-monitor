@@ -6,7 +6,7 @@ export default class SliderMonitor extends Component {
   constructor(props) {
     super(props);
 
-    if (props.keyboardEnabled) {
+    if (props.keyboardEnabled && process.env.IS_BROWSER) {
       window.addEventListener('keydown', ::this.handleKeyPress);
     }
 
