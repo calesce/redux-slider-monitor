@@ -21,7 +21,6 @@ export default class SliderMonitor extends Component {
     currentStateIndex: PropTypes.number.isRequired,
     monitorState: PropTypes.object.isRequired,
     stagedActions: PropTypes.array.isRequired,
-    skippedActions: PropTypes.object.isRequired,
     reset: PropTypes.func.isRequired,
     jumpToState: PropTypes.func.isRequired,
     setMonitorState: PropTypes.func.isRequired,
