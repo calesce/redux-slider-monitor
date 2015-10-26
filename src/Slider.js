@@ -1,4 +1,5 @@
 import React, { Children, Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 export default class Slider extends Component {
   constructor(props) {
@@ -110,8 +111,8 @@ export default class Slider extends Component {
   }
 
   componentDidMount = () => {
-    let slider = React.findDOMNode(this.refs.slider);
-    let handle = React.findDOMNode(this.refs.handle);
+    let slider = findDOMNode(this.refs.slider);
+    let handle = findDOMNode(this.refs.handle);
     let rect = slider.getBoundingClientRect();
 
     let size = this.sizeKey();

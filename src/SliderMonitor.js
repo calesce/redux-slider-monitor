@@ -1,14 +1,12 @@
 import React, { PropTypes, findDOMNode, Component } from 'react';
+import { findDOMNode } from 'react-dom';
+import * as themes from 'redux-devtools-themes';
+import { ActionCreators } from 'redux-devtools';
 import Slider from './Slider';
-import * as themes from 'redux-devtools/lib/react/themes';
 
 export default class SliderMonitor extends Component {
   constructor(props) {
     super(props);
-
-    if (props.keyboardEnabled && process.env.IS_BROWSER) {
-      window.addEventListener('keydown', this.handleKeyPress);
-    }
 
     this.state = {
       timer: undefined,
@@ -71,19 +69,9 @@ export default class SliderMonitor extends Component {
     this.props.reset();
   }
 
-  toggleHidden = () => {
-    const { monitorState } = this.props;
-
-    this.props.setMonitorState({
-      ...monitorState,
-      isVisible: !monitorState.isVisible
-    });
-  }
-
   handleKeyPress = (event) => {
     if (event.ctrlKey && event.keyCode === 72) { // Ctrl+H
       event.preventDefault();
-      this.toggleHidden();
     } else if (event.ctrlKey && event.keyCode === 74) { // Ctrl+K
       event.preventDefault();
 

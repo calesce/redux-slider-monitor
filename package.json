@@ -1,7 +1,7 @@
 {
-  "name": "redux-slider-monitor",
-  "version": "0.6.3",
-  "description": "A custom monitor for Redux DevTools using a draggable slider and play/pause buttons",
+  "name": "redux-devtools-slider-monitor",
+  "version": "1.0.0-beta-1",
+  "description": "A custom monitor for replaying Redux actions that works similarly to a video player",
   "main": "lib/SliderMonitor.js",
   "scripts": {
     "clean": "rimraf lib",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/calesce/redux-slider-monitor.git"
+    "url": "https://github.com/calesce/redux-devtools-slider-monitor.git"
   },
   "author": "Cale Newman <newman.cale@gmail.com> (http://github.com/calesce)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/calesce/redux-slider-monitor/issues"
+    "url": "https://github.com/calesce/redux-devtools-slider-monitor/issues"
   },
-  "homepage": "https://github.com/calesce/redux-slider-monitor",
+  "homepage": "https://github.com/calesce/redux-devtools-slider-monitor",
   "devDependencies": {
     "babel": "^5.5.8",
     "babel-core": "^5.6.18",
@@ -31,11 +31,11 @@
     "rimraf": "^2.3.4"
   },
   "peerDependencies": {
-    "redux": "^3.0.0",
-    "redux-devtools": "^2.1.0",
-    "react-redux": "^3.0.0"
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "redux-devtools": "^3.0.0-beta-3"
   },
   "dependencies": {
-    "redux-devtools": "^2.1.0"
+    "redux-devtools-themes": "^1.0.0"
   }
 }
