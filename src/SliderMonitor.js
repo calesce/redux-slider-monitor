@@ -6,7 +6,7 @@ export default class SliderMonitor extends Component {
   constructor(props) {
     super(props);
 
-    if (props.keyboardEnabled && process.env.IS_BROWSER) {
+    if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
     }
 
@@ -80,10 +80,10 @@ export default class SliderMonitor extends Component {
   }
 
   handleKeyPress = (event) => {
-    if (event.ctrlKey && event.keyCode === 72) { // Ctrl+H
+    if (event.ctrlKey && event.keyCode === 72) { // ctrl+h
       event.preventDefault();
       this.toggleHidden();
-    } else if (event.ctrlKey && event.keyCode === 74) { // Ctrl+K
+    } else if (event.ctrlKey && event.keyCode === 74) { // ctrl+j
       event.preventDefault();
 
       if (this.state.timer) {
@@ -91,10 +91,10 @@ export default class SliderMonitor extends Component {
       }
 
       return this.state.replaySpeed === 'Live' ? this.startRealtimeReplay() : this.startReplay();
-    } else if (event.ctrlKey && event.keyCode === 219) { // [
+    } else if (event.ctrlKey && event.keyCode === 219) { // ctrl+[
       event.preventDefault();
       this.stepLeft();
-    } else if (event.ctrlKey && event.keyCode === 221) { // ]
+    } else if (event.ctrlKey && event.keyCode === 221) { // ctrl+]
       event.preventDefault();
       this.stepRight();
     }
