@@ -90,7 +90,11 @@ export default class SliderMonitor extends Component {
         return this.pauseReplay();
       }
 
-      return this.state.replaySpeed === 'Live' ? this.startRealtimeReplay() : this.startReplay();
+      if(this.state.replaySpeed === 'Live') {
+        this.startRealtimeReplay()
+      } else {
+        this.startReplay();
+      }
     } else if (event.ctrlKey && event.keyCode === 219) { // ctrl+[
       event.preventDefault();
       this.stepLeft();
@@ -109,31 +113,37 @@ export default class SliderMonitor extends Component {
   }
 
   startReplay = () => {
+    const { computedStates, currentStateIndex, jumpToState } = this.props;
+
     if (this.props.computedStates.length < 2) {
       return;
     }
+    let speed = this.state.replaySpeed === '1x' ? 500 : 200;
 
-    let currentStateIndex;
-    if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
-      this.props.jumpToState(0);
-      currentStateIndex = 0;
+    let stateIndex;
+    if (currentStateIndex === computedStates.length - 1) {
+      jumpToState(0);
+      stateIndex = 0;
+    } else if (currentStateIndex === computedStates.length - 2) {
+      return jumpToState(currentStateIndex + 1);
     } else {
-      this.props.jumpToState(this.props.currentStateIndex + 1);
-      currentStateIndex = this.props.currentStateIndex + 1;
+      stateIndex = currentStateIndex + 1;
+      jumpToState(currentStateIndex + 1);
     }
 
-    let speed = this.state.replaySpeed === '1x' ? 500 : 200;
-    let counter = currentStateIndex + 1;
+    let counter = stateIndex;
     let timer = setInterval(() => {
-      this.props.jumpToState(counter);
+      if(counter + 1 <= computedStates.length - 1) {
+        jumpToState(counter + 1);
+      }
+      counter++;
 
-      if (counter === this.props.computedStates.length - 1) {
+      if (counter >= computedStates.length - 1) {
         clearInterval(this.state.timer);
-        this.setState({
+        return this.setState({
           timer: undefined
         });
       }
-      counter++;
     }, speed);
 
     this.setState({ timer });
