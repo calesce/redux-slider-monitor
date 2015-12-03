@@ -24,13 +24,15 @@ export default class SliderMonitor extends Component {
     reset: PropTypes.func.isRequired,
     jumpToState: PropTypes.func.isRequired,
     setMonitorState: PropTypes.func.isRequired,
-    select: PropTypes.func.isRequired
+    select: PropTypes.func.isRequired,
+    visibleOnLoad: PropTypes.bool
   };
 
   static defaultProps = {
     select: (state) => state,
     monitorState: { isVisible: true },
-    theme: 'nicinabox'
+    theme: 'nicinabox',
+    visibleOnLoad: PropTypes.bool
   };
 
   componentWillReceiveProps(nextProps) {
@@ -64,6 +66,15 @@ export default class SliderMonitor extends Component {
       scrollableNode.scrollTop = scrollHeight - offsetHeight;
       this.scrollDown = false;
     }
+  }
+
+  componentWillMount() {
+    let visibleOnLoad = this.props.visibleOnLoad;
+    const { monitorState } = this.props;
+    this.props.setMonitorState({
+      ...monitorState,
+      isVisible: visibleOnLoad
+    });
   }
 
   handleReset = () => {
