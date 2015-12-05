@@ -101,8 +101,8 @@ export default class SliderMonitor extends Component {
         return this.pauseReplay();
       }
 
-      if(this.state.replaySpeed === 'Live') {
-        this.startRealtimeReplay()
+      if (this.state.replaySpeed === 'Live') {
+        this.startRealtimeReplay();
       } else {
         this.startReplay();
       }
@@ -136,7 +136,8 @@ export default class SliderMonitor extends Component {
       jumpToState(0);
       stateIndex = 0;
     } else if (currentStateIndex === computedStates.length - 2) {
-      return jumpToState(currentStateIndex + 1);
+      jumpToState(currentStateIndex + 1);
+      return;
     } else {
       stateIndex = currentStateIndex + 1;
       jumpToState(currentStateIndex + 1);
@@ -144,7 +145,7 @@ export default class SliderMonitor extends Component {
 
     let counter = stateIndex;
     let timer = setInterval(() => {
-      if(counter + 1 <= computedStates.length - 1) {
+      if (counter + 1 <= computedStates.length - 1) {
         jumpToState(counter + 1);
       }
       counter++;
