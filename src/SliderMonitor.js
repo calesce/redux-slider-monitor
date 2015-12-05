@@ -242,14 +242,14 @@ export default class SliderMonitor extends Component {
   changeReplaySpeed = () => {
     let replaySpeed;
     switch (this.state.replaySpeed) {
-      case '1x':
-        replaySpeed = '2x';
-        break;
-      case '2x':
-        replaySpeed = 'Live';
-        break;
-      default:
-        replaySpeed = '1x';
+    case '1x':
+      replaySpeed = '2x';
+      break;
+    case '2x':
+      replaySpeed = 'Live';
+      break;
+    default:
+      replaySpeed = '1x';
     }
 
     this.setState({ replaySpeed });
