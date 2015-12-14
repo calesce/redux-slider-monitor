@@ -96,17 +96,17 @@ export default class Slider extends Component {
   orChildrenCount = (value, defaultValue) => {
     let count = Children.count(this.props.children);
     switch (count) {
-      case 0:
-        return value.length > 0 ? value : defaultValue;
-      case value.length:
-        return value;
-      case defaultValue.length:
-        return defaultValue;
-      default:
-        if (value.length !== count || defaultValue.length !== count) {
-          console.warn(this.constructor.displayName + ': Number of values does not match number of children.');
-        }
-        return this.linspace(this.props.min, this.props.max, count);
+    case 0:
+      return value.length > 0 ? value : defaultValue;
+    case value.length:
+      return value;
+    case defaultValue.length:
+      return defaultValue;
+    default:
+      if (value.length !== count || defaultValue.length !== count) {
+        console.warn(this.constructor.displayName + ': Number of values does not match number of children.');
+      }
+      return this.linspace(this.props.min, this.props.max, count);
     }
   }
 

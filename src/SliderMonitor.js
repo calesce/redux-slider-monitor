@@ -14,6 +14,10 @@ export default class SliderMonitor extends Component {
   constructor(props) {
     super(props);
 
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', this.handleKeyPress);
+    }
+
     this.state = {
       timer: undefined,
       replaySpeed: '1x'
@@ -77,18 +81,22 @@ export default class SliderMonitor extends Component {
   }
 
   handleKeyPress = (event) => {
-    if (event.ctrlKey && event.keyCode === 74) { // Ctrl+K
+    if (event.ctrlKey && event.keyCode === 74) { // ctrl+j
       event.preventDefault();
 
       if (this.state.timer) {
         return this.pauseReplay();
       }
 
-      return this.state.replaySpeed === 'Live' ? this.startRealtimeReplay() : this.startReplay();
-    } else if (event.ctrlKey && event.keyCode === 219) { // [
+      if (this.state.replaySpeed === 'Live') {
+        this.startRealtimeReplay();
+      } else {
+        this.startReplay();
+      }
+    } else if (event.ctrlKey && event.keyCode === 219) { // ctrl+[
       event.preventDefault();
       this.stepLeft();
-    } else if (event.ctrlKey && event.keyCode === 221) { // ]
+    } else if (event.ctrlKey && event.keyCode === 221) { // ctrl+]
       event.preventDefault();
       this.stepRight();
     }
@@ -103,31 +111,38 @@ export default class SliderMonitor extends Component {
   }
 
   startReplay = () => {
-    if (this.props.computedStates.length < 2) {
+    const { computedStates, currentStateIndex, dispatch } = this.props;
+
+    if (computedStates.length < 2) {
       return;
     }
+    let speed = this.state.replaySpeed === '1x' ? 500 : 200;
 
-    let currentStateIndex;
-    if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
-      this.props.dispatch(jumpToState(0));
-      currentStateIndex = 0;
+    let stateIndex;
+    if (currentStateIndex === computedStates.length - 1) {
+      dispatch(jumpToState(0));
+      stateIndex = 0;
+    } else if (currentStateIndex === computedStates.length - 2) {
+      dispatch(jumpToState(currentStateIndex + 1));
+      return;
     } else {
-      this.props.dispatch(jumpToState(this.props.currentStateIndex + 1));
-      currentStateIndex = this.props.currentStateIndex + 1;
+      stateIndex = currentStateIndex + 1;
+      dispatch(jumpToState(currentStateIndex + 1));
     }
 
-    let speed = this.state.replaySpeed === '1x' ? 500 : 200;
-    let counter = currentStateIndex + 1;
+    let counter = stateIndex;
     let timer = setInterval(() => {
-      this.props.dispatch(jumpToState(counter));
+      if (counter + 1 <= computedStates.length - 1) {
+        dispatch(jumpToState(counter + 1));
+      }
+      counter++;
 
-      if (counter === this.props.computedStates.length - 1) {
+      if (counter >= computedStates.length - 1) {
         clearInterval(this.state.timer);
-        this.setState({
+        return this.setState({
           timer: undefined
         });
       }
-      counter++;
     }, speed);
 
     this.setState({ timer });
@@ -223,14 +238,14 @@ export default class SliderMonitor extends Component {
   changeReplaySpeed = () => {
     let replaySpeed;
     switch (this.state.replaySpeed) {
-      case '1x':
-        replaySpeed = '2x';
-        break;
-      case '2x':
-        replaySpeed = 'Live';
-        break;
-      default:
-        replaySpeed = '1x';
+    case '1x':
+      replaySpeed = '2x';
+      break;
+    case '2x':
+      replaySpeed = 'Live';
+      break;
+    default:
+      replaySpeed = '1x';
     }
 
     this.setState({ replaySpeed });
