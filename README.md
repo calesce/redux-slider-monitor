@@ -10,19 +10,16 @@ It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider
 
 ```npm install redux-slider-monitor```
 
-### Usage
+### Recommended Usage
 
-In your root component:
+Use with [`DockMonitor`](https://github.com/gaearon/redux-devtools-dock-monitor)
 ```javascript
-import { DevTools, DebugPanel } from 'redux-devtools';
-import SliderMonitor from 'redux-slider-monitor';
-
-<DebugPanel left right bottom>
-  <DevTools store={store}
-            keyboardEnabled // if you want keyboard shortcuts
-            monitor={SliderMonitor}
-  />
-</DebugPanel>
+<DockMonitor toggleVisibilityKey='ctrl-h'
+             changePositionKey='ctrl-q'
+             defaultPosition='bottom'
+             defaultSize={0.15}>
+  <SliderMonitor keyboardEnabled />
+</DockMonitor>
 ```
 
 Dispatch some Redux actions. Use the slider to navigate between the state changes.
@@ -31,7 +28,7 @@ Click the play/pause buttons to watch the state changes over time, or step backw
 
 ## Keyboard shortcuts
 
-```ctrl+h```: toggle hiding the monitor
+Pass the ```keyBoardEnabled``` prop to use these shortcuts
 
 ```ctrl+j```: play/pause
 
@@ -49,7 +46,7 @@ git clone https://github.com/calesce/redux-slider-monitor.git
 cd redux-slider-monitor
 npm install
 
-cd examples/counter
+cd examples/todomvc
 npm install
 npm start
 open http://localhost:3000
