@@ -9,7 +9,7 @@ import Slider from './Slider';
 const { reset, jumpToState } = ActionCreators;
 
 export default class SliderMonitor extends Component {
-  static reducer = reducer;
+  static update = reducer;
 
   constructor(props) {
     super(props);
