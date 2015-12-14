@@ -1,4 +1,5 @@
 import React, { Children, Component, PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 
 export default class Slider extends Component {
   constructor(props) {
@@ -110,8 +111,8 @@ export default class Slider extends Component {
   }
 
   componentDidMount = () => {
-    let slider = React.findDOMNode(this.refs.slider);
-    let handle = React.findDOMNode(this.refs.handle);
+    let slider = findDOMNode(this.refs.slider);
+    let handle = findDOMNode(this.refs.handle);
     let rect = slider.getBoundingClientRect();
 
     let size = this.sizeKey();
@@ -510,7 +511,8 @@ export default class Slider extends Component {
     const { value, min, max } = this.props;
     let style = {
       position: 'absolute',
-      left: this.calcOffset(value) + 6
+      left: this.calcOffset(value) + 6,
+      color: this.props.theme.base06
     };
 
     if (value !== min && value !== max) {
@@ -540,9 +542,9 @@ export default class Slider extends Component {
           {handle}
         </div>
         <div style={{ position: 'relative', bottom: 10 }}>
-          <small style={{ left: 7, position: 'absolute' }}>{this.props.min}</small>
+          <small style={{ left: 7, position: 'absolute', color: this.props.theme.base06 }}>{this.props.min}</small>
           {currentValue}
-          <small style={{ right: 5, position: 'absolute' }}>{this.props.max}</small>
+          <small style={{ right: 5, position: 'absolute', color: this.props.theme.base06 }}>{this.props.max}</small>
         </div>
       </div>
     );

@@ -1,8 +1,16 @@
-import React, { PropTypes, findDOMNode, Component } from 'react';
+import React, { PropTypes, Component } from 'react';
+import { findDOMNode } from 'react-dom';
+import * as themes from 'redux-devtools-themes';
+import { ActionCreators } from 'redux-devtools';
+
+import reducer from './reducers';
 import Slider from './Slider';
-import * as themes from 'redux-devtools/lib/react/themes';
+
+const { reset, jumpToState } = ActionCreators;
 
 export default class SliderMonitor extends Component {
+  static update = reducer;
+
   constructor(props) {
     super(props);
 
@@ -17,22 +25,26 @@ export default class SliderMonitor extends Component {
   }
 
   static propTypes = {
-    computedStates: PropTypes.array.isRequired,
-    currentStateIndex: PropTypes.number.isRequired,
-    monitorState: PropTypes.object.isRequired,
-    stagedActions: PropTypes.array.isRequired,
-    reset: PropTypes.func.isRequired,
-    jumpToState: PropTypes.func.isRequired,
-    setMonitorState: PropTypes.func.isRequired,
+    dispatch: PropTypes.func,
+    computedStates: PropTypes.array,
+    actionsById: PropTypes.object,
+    currentStateIndex: PropTypes.number,
+    monitorState: PropTypes.shape({
+      initialScrollTop: PropTypes.number
+    }),
+    preserveScrollTop: PropTypes.bool,
+    stagedActions: PropTypes.array,
     select: PropTypes.func.isRequired,
-    visibleOnLoad: PropTypes.bool
+    theme: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.string
+    ])
   };
 
   static defaultProps = {
     select: (state) => state,
-    monitorState: { isVisible: true },
     theme: 'nicinabox',
-    visibleOnLoad: PropTypes.bool
+    preserveScrollTop: true
   };
 
   componentWillReceiveProps(nextProps) {
@@ -40,10 +52,9 @@ export default class SliderMonitor extends Component {
     if (!node) {
       this.scrollDown = true;
     } else if (
-      this.props.stagedActions.length < nextProps.stagedActions.length
+      this.props.stagedActionIds.length < nextProps.stagedActionIds.length
     ) {
-      const scrollableNode = node.parentElement;
-      const { scrollTop, offsetHeight, scrollHeight } = scrollableNode;
+      const { scrollTop, offsetHeight, scrollHeight } = node;
 
       this.scrollDown = Math.abs(
         scrollHeight - (scrollTop + offsetHeight)
@@ -58,43 +69,19 @@ export default class SliderMonitor extends Component {
     if (!node) {
       return;
     }
-
     if (this.scrollDown) {
-      const scrollableNode = node.parentElement;
-      const { offsetHeight, scrollHeight } = scrollableNode;
-
-      scrollableNode.scrollTop = scrollHeight - offsetHeight;
+      const { offsetHeight, scrollHeight } = node;
+      node.scrollTop = scrollHeight - offsetHeight;
       this.scrollDown = false;
     }
   }
 
-  componentWillMount() {
-    let visibleOnLoad = this.props.visibleOnLoad;
-    const { monitorState } = this.props;
-    this.props.setMonitorState({
-      ...monitorState,
-      isVisible: visibleOnLoad
-    });
-  }
-
   handleReset = () => {
-    this.props.reset();
-  }
-
-  toggleHidden = () => {
-    const { monitorState } = this.props;
-
-    this.props.setMonitorState({
-      ...monitorState,
-      isVisible: !monitorState.isVisible
-    });
+    this.props.dispatch(reset());
   }
 
   handleKeyPress = (event) => {
-    if (event.ctrlKey && event.keyCode === 72) { // ctrl+h
-      event.preventDefault();
-      this.toggleHidden();
-    } else if (event.ctrlKey && event.keyCode === 74) { // ctrl+j
+    if (event.ctrlKey && event.keyCode === 74) { // ctrl+j
       event.preventDefault();
 
       if (this.state.timer) {
@@ -120,33 +107,33 @@ export default class SliderMonitor extends Component {
       this.pauseReplay();
     }
 
-    this.props.jumpToState(value);
+    this.props.dispatch(jumpToState(value));
   }
 
   startReplay = () => {
-    const { computedStates, currentStateIndex, jumpToState } = this.props;
+    const { computedStates, currentStateIndex, dispatch } = this.props;
 
-    if (this.props.computedStates.length < 2) {
+    if (computedStates.length < 2) {
       return;
     }
     let speed = this.state.replaySpeed === '1x' ? 500 : 200;
 
     let stateIndex;
     if (currentStateIndex === computedStates.length - 1) {
-      jumpToState(0);
+      dispatch(jumpToState(0));
       stateIndex = 0;
     } else if (currentStateIndex === computedStates.length - 2) {
-      jumpToState(currentStateIndex + 1);
+      dispatch(jumpToState(currentStateIndex + 1));
       return;
     } else {
       stateIndex = currentStateIndex + 1;
-      jumpToState(currentStateIndex + 1);
+      dispatch(jumpToState(currentStateIndex + 1));
     }
 
     let counter = stateIndex;
     let timer = setInterval(() => {
       if (counter + 1 <= computedStates.length - 1) {
-        jumpToState(counter + 1);
+        dispatch(jumpToState(counter + 1));
       }
       counter++;
 
@@ -167,7 +154,7 @@ export default class SliderMonitor extends Component {
     }
 
     if (this.props.currentStateIndex === this.props.computedStates.length - 1) {
-      this.props.jumpToState(0);
+      this.props.dispatch(jumpToState(0));
 
       this.loop(0);
     } else {
@@ -176,20 +163,19 @@ export default class SliderMonitor extends Component {
   }
 
   loop = (index) => {
-    const { computedStates, timestamps } = this.props;
     let currentTimestamp = Date.now();
-    let timestampDiff = timestamps[index + 1] - timestamps[index];
+    let timestampDiff = this.getLatestTimestampDiff(index);
 
     let aLoop = () => {
-      if (this.props.currentStateIndex === computedStates.length - 1) {
-        return this.pauseReplay();
-      }
-
       let replayDiff = Date.now() - currentTimestamp;
-
       if (replayDiff >= timestampDiff) {
-        this.props.jumpToState(this.props.currentStateIndex + 1);
-        timestampDiff = timestamps[this.props.currentStateIndex + 1] - timestamps[this.props.currentStateIndex];
+        this.props.dispatch(jumpToState(this.props.currentStateIndex + 1));
+
+        if (this.props.currentStateIndex >= this.props.computedStates.length - 1) {
+          return this.pauseReplay();
+        }
+
+        timestampDiff = this.getLatestTimestampDiff(this.props.currentStateIndex);
         currentTimestamp = Date.now();
 
         this.setState({
@@ -202,11 +188,21 @@ export default class SliderMonitor extends Component {
       }
     };
 
-    if (index !== computedStates.length - 1) {
+    if (index !== this.props.computedStates.length - 1) {
       this.setState({
         timer: requestAnimationFrame(aLoop)
       });
     }
+  }
+
+  getLatestTimestampDiff = (index) => {
+    return this.getTimestampOfStateIndex(index + 1) - this.getTimestampOfStateIndex(index);
+  }
+
+  getTimestampOfStateIndex = (stateIndex) => {
+    let id = this.props.stagedActionIds[stateIndex];
+
+    return this.props.actionsById[id].timestamp;
   }
 
   pauseReplay = (cb) => {
@@ -227,7 +223,7 @@ export default class SliderMonitor extends Component {
     this.pauseReplay();
 
     if (this.props.currentStateIndex !== 0) {
-      this.props.jumpToState(this.props.currentStateIndex - 1);
+      this.props.dispatch(jumpToState(this.props.currentStateIndex - 1));
     }
   }
 
@@ -235,7 +231,7 @@ export default class SliderMonitor extends Component {
     this.pauseReplay();
 
     if (this.props.currentStateIndex !== this.props.computedStates.length - 1) {
-      this.props.jumpToState(this.props.currentStateIndex + 1);
+      this.props.dispatch(jumpToState(this.props.currentStateIndex + 1));
     }
   }
 
@@ -291,7 +287,7 @@ export default class SliderMonitor extends Component {
     let play = this.state.replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
 
     return (
-      <a onClick={play}>
+      <a onClick={play} style={{ paddingBottom: 50 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle(theme)}
         >
@@ -303,7 +299,7 @@ export default class SliderMonitor extends Component {
 
   renderPauseButton = (theme) => {
     return (
-      <a onClick={this.pauseReplay}>
+      <a onClick={this.pauseReplay} style={{ paddingBottom: 50 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle(theme)}
         >
@@ -315,7 +311,7 @@ export default class SliderMonitor extends Component {
 
   renderStepLeftButton = (theme) => {
     return (
-      <a onClick={this.stepLeft}>
+      <a onClick={this.stepLeft} style={{ paddingBottom: 50 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle(theme)}
         >
@@ -327,7 +323,7 @@ export default class SliderMonitor extends Component {
 
   renderStepRightButton = (theme) => {
     return (
-      <a onClick={this.stepRight}>
+      <a onClick={this.stepRight} style={{ paddingBottom: 50 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle(theme)}
         >
@@ -340,8 +336,9 @@ export default class SliderMonitor extends Component {
   renderPlaybackSpeedButton = (theme) => {
     let style = {
       cursor: 'hand',
-      fill: theme.base06,
-      fontSize: this.state.replaySpeed === 'Live' ? '1.1em' : '1.8em'
+      color: theme.base06,
+      fontSize: this.state.replaySpeed === 'Live' ? '1.1em' : '1.8em',
+      paddingBottom: 50
     };
 
     return (
@@ -351,9 +348,7 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  render() {
-    const { monitorState, currentStateIndex, computedStates } = this.props;
-
+  setUpTheme = () => {
     let theme;
     if (typeof this.props.theme === 'string') {
       if (typeof themes[this.props.theme] !== 'undefined') {
@@ -364,9 +359,13 @@ export default class SliderMonitor extends Component {
     } else {
       theme = this.props.theme;
     }
-    if (!monitorState.isVisible) {
-      return null;
-    }
+
+    return theme;
+  }
+
+  render() {
+    const { currentStateIndex, computedStates } = this.props;
+    let theme = this.setUpTheme();
 
     return (
       <div style={this.containerStyle(theme)}>
@@ -384,7 +383,7 @@ export default class SliderMonitor extends Component {
         { this.renderStepRightButton(theme) }
         { this.renderPlaybackSpeedButton(theme) }
         <a onClick={this.handleReset}
-           style={{ textDecoration: 'underline', cursor: 'hand' }}>
+           style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, paddingBottom: 50 }}>
           <small>Reset</small>
         </a>
       </div>
