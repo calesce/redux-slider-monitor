@@ -4,7 +4,7 @@ It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider
 
 [Try out the demo!](https://calesce.github.io/redux-slider-monitor/?debug_session=123)
 
-<image src="https://s3.amazonaws.com/f.cl.ly/items/2i1L1G1n1a1h3y1a2O1w/Screen%20Recording%202015-08-04%20at%2007.45%20PM.gif" width='600'>
+<image src="https://s3.amazonaws.com/f.cl.ly/items/1I3P222C3N2R1M2y1K3b/Screen%20Recording%202015-12-22%20at%2007.20%20PM.gif?v=1b6267e7" width='600'>
 
 ### Installation
 
