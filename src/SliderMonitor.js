@@ -4,6 +4,7 @@ import { ActionCreators } from 'redux-devtools';
 
 import reducer from './reducers';
 import Slider from './Slider';
+import SliderButton from './SliderButton';
 
 const { reset, jumpToState } = ActionCreators;
 
@@ -259,87 +260,19 @@ export default class SliderMonitor extends Component {
     };
   }
 
-  iconStyle(theme) {
-    return {
-      cursor: 'hand',
-      fill: theme.base06,
-      width: '2.3rem',
-      height: '2.3rem'
-    };
-  }
-
-  renderPlayButton(theme) {
-    const play = this.state.replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
-
-    return (
-      <a onClick={play} style={{ paddingBottom: 50 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle(theme)}
-        >
-          <g><path d='M8 5v14l11-7z'></path></g>
-        </svg>
-      </a>
-    );
-  }
-
-  renderPauseButton = (theme) => {
-    return (
-      <a onClick={this.pauseReplay} style={{ paddingBottom: 50 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle(theme)}
-        >
-          <g><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'></path></g>
-        </svg>
-      </a>
-    );
-  }
-
-  renderStepLeftButton = (theme) => {
-    return (
-      <a onClick={this.stepLeft} style={{ paddingBottom: 50 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle(theme)}
-        >
-          <g><path d='M15.41 16.09l-4.58-4.59 4.58-4.59-1.41-1.41-6 6 6 6z'></path></g>
-        </svg>
-      </a>
-    );
-  }
-
-  renderStepRightButton = (theme) => {
-    return (
-      <a onClick={this.stepRight} style={{ paddingBottom: 50 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle(theme)}
-        >
-          <g><path d='M8.59 16.34l4.58-4.59-4.58-4.59 1.41-1.41 6 6-6 6z'></path></g>
-        </svg>
-      </a>
-    );
-  }
-
-  renderPlaybackSpeedButton = (theme) => {
-    const style = {
-      cursor: 'hand',
-      color: theme.base06,
-      fontSize: this.state.replaySpeed === 'Live' ? '1.1em' : '1.8em',
-      paddingBottom: 50
-    };
-
-    return (
-      <div style={style} onClick={this.changeReplaySpeed}>
-        { this.state.replaySpeed }
-      </div>
-    );
-  }
-
   render() {
     const { currentStateIndex, computedStates } = this.props;
+    const { replaySpeed } = this.state;
     const theme = this.setUpTheme();
+
+    const onPlayClick = replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
+    const playPause = this.state.timer ?
+      <SliderButton theme={theme} type='pause' onClick={this.pauseReplay} /> :
+      <SliderButton theme={theme} type='play' onClick={onPlayClick} />;
 
     return (
       <div style={this.containerStyle(theme)}>
-        { this.state.timer ? this.renderPauseButton(theme) : this.renderPlayButton(theme) }
+        {playPause}
         <div style={{ width: '80%', height: '100%' }}>
           <Slider
             min={0}
@@ -349,9 +282,9 @@ export default class SliderMonitor extends Component {
             theme={theme}
           />
         </div>
-        { this.renderStepLeftButton(theme) }
-        { this.renderStepRightButton(theme) }
-        { this.renderPlaybackSpeedButton(theme) }
+        <SliderButton theme={theme} type='stepLeft' onClick={this.stepLeft} />
+        <SliderButton theme={theme} type='stepRight' onClick={this.stepRight} />
+        <SliderButton theme={theme} type='playBackSpeed' replaySpeed={replaySpeed} onClick={this.changeReplaySpeed} />
         <a onClick={this.handleReset}
           style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, paddingBottom: 50 }}
         >
