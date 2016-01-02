@@ -5,16 +5,17 @@
     "mocha": true,
     "node": true
   },
+  "parser": "babel-eslint",
   "rules": {
+    "comma-dangle": [2, "never"],
+    "jsx-quotes": [2, "prefer-single"],
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
     "react/react-in-jsx-scope": 2,
-    "no-console": 0,
-    // Temporarily disabled due to babel-eslint issues:
-    "block-scoped-var": 0,
-    "padded-blocks": 0,
+    "react/sort-comp": 0
   },
   "plugins": [
+    "babel",
     "react"
   ]
 }

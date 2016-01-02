@@ -2,28 +2,6 @@ import React, { Children, Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 
 export default class Slider extends Component {
-  constructor(props) {
-    super(props);
-
-    let value = this.orChildrenCount(this.ensureArray(this.props.value), this.ensureArray(this.props.defaultValue));
-    // reused throughout the component to store results of iterations over `value`
-    this.tempArray = value.slice();
-
-    let zIndices = [];
-    for (let i = 0; i < value.length; i++) {
-      value[i] = this.trimAlignValue(value[i], this.props);
-      zIndices.push(i);
-    }
-
-    this.state = {
-      index: -1,
-      upperBound: 0,
-      sliderLength: 0,
-      value: value,
-      zIndices: zIndices
-    };
-  }
-
   static propTypes = {
     min: PropTypes.number,
     max: PropTypes.number,
@@ -43,7 +21,9 @@ export default class Slider extends Component {
     onBeforeChange: PropTypes.func,
     onChange: PropTypes.func,
     onAfterChange: PropTypes.func,
-    onSliderClick: PropTypes.func
+    onSliderClick: PropTypes.func,
+    theme: PropTypes.object,
+    children: PropTypes.array
   };
 
   static defaultProps = {
@@ -56,6 +36,28 @@ export default class Slider extends Component {
     disabled: false,
     snapDragDisabled: false
   };
+
+  constructor(props) {
+    super(props);
+
+    const value = this.orChildrenCount(this.ensureArray(this.props.value), this.ensureArray(this.props.defaultValue));
+    // reused throughout the component to store results of iterations over `value`
+    this.tempArray = value.slice();
+
+    const zIndices = [];
+    for (let i = 0; i < value.length; i++) {
+      value[i] = this.trimAlignValue(value[i], this.props);
+      zIndices.push(i);
+    }
+
+    this.state = {
+      index: -1,
+      upperBound: 0,
+      sliderLength: 0,
+      value,
+      zIndices
+    };
+  }
 
   pauseEvent = (e) => {
     if (e.stopPropagation) e.stopPropagation();
@@ -71,8 +73,8 @@ export default class Slider extends Component {
   }
 
   linspace(min, max, count) {
-    let range = (max - min) / (count - 1);
-    let res = [];
+    const range = (max - min) / (count - 1);
+    const res = [];
     for (let i = 0; i < count; i++) {
       res.push(min + range * i);
     }
@@ -94,37 +96,34 @@ export default class Slider extends Component {
   }
 
   orChildrenCount = (value, defaultValue) => {
-    let count = Children.count(this.props.children);
+    const count = Children.count(this.props.children);
     switch (count) {
-    case 0:
-      return value.length > 0 ? value : defaultValue;
-    case value.length:
-      return value;
-    case defaultValue.length:
-      return defaultValue;
-    default:
-      if (value.length !== count || defaultValue.length !== count) {
-        console.warn(this.constructor.displayName + ': Number of values does not match number of children.');
-      }
-      return this.linspace(this.props.min, this.props.max, count);
+      case 0:
+        return value.length > 0 ? value : defaultValue;
+      case value.length:
+        return value;
+      case defaultValue.length:
+        return defaultValue;
+      default:
+        return this.linspace(this.props.min, this.props.max, count);
     }
   }
 
   componentDidMount = () => {
-    let slider = findDOMNode(this.refs.slider);
-    let handle = findDOMNode(this.refs.handle);
-    let rect = slider.getBoundingClientRect();
+    const slider = findDOMNode(this.refs.slider);
+    const handle = findDOMNode(this.refs.handle);
+    const rect = slider.getBoundingClientRect();
 
-    let size = this.sizeKey();
+    const size = this.sizeKey();
 
-    let sliderMax = rect[this.posMaxKey()];
-    let sliderMin = rect[this.posMinKey()];
+    const sliderMax = rect[this.posMaxKey()];
+    const sliderMin = rect[this.posMinKey()];
 
     this.setState({
       upperBound: slider[size] - handle[size],
       sliderLength: Math.abs(sliderMax - sliderMin),
       handleSize: handle[size],
-      sliderStart: this.props.handleResize ? sliderMax : sliderMin
+      sliderStart: sliderMin
     });
   }
 
@@ -134,14 +133,14 @@ export default class Slider extends Component {
 
   // calculates the offset of a handle in pixels based on its value.
   calcOffset = (value) => {
-    let dividend = (this.props.max - this.props.min === 0) ? 1 : this.props.max - this.props.min;
-    let ratio = (value - this.props.min) / dividend;
+    const dividend = (this.props.max - this.props.min === 0) ? 1 : this.props.max - this.props.min;
+    const ratio = (value - this.props.min) / dividend;
     return ratio * this.state.upperBound;
   }
 
   // calculates the value corresponding to a given pixel offset, i.e. the inverse of `calcOffset`.
   calcValue = (offset) => {
-    let ratio = offset / this.state.upperBound;
+    const ratio = offset / this.state.upperBound;
     return ratio * (this.props.max - this.props.min) + this.props.min;
   }
 
@@ -177,12 +176,12 @@ export default class Slider extends Component {
     let minDist = Number.MAX_VALUE;
     let closestIndex = -1;
 
-    let value = this.state.value;
-    let l = value.length;
+    const value = this.state.value;
+    const l = value.length;
 
     for (let i = 0; i < l; i++) {
-      let offset = this.calcOffset(value[i]);
-      let dist = Math.abs(pixelOffset - offset);
+      const offset = this.calcOffset(value[i]);
+      const dist = Math.abs(pixelOffset - offset);
       if (dist < minDist) {
         minDist = dist;
         closestIndex = i;
@@ -200,11 +199,11 @@ export default class Slider extends Component {
 
   // Snaps the nearest handle to the value corresponding to `position` and calls `callback` with that handle's index.
   forceValueFromPosition = (position, callback) => {
-    let pixelOffset = this.calcOffsetFromPosition(position);
-    let closestIndex = this.getClosestIndex(pixelOffset);
-    let nextValue = this.trimAlignValue(this.calcValue(pixelOffset));
+    const pixelOffset = this.calcOffsetFromPosition(position);
+    const closestIndex = this.getClosestIndex(pixelOffset);
+    const nextValue = this.trimAlignValue(this.calcValue(pixelOffset));
 
-    let value = this.state.value.slice(); // Clone this.state.value since we'll modify it temporarily
+    const value = this.state.value.slice(); // Clone this.state.value since we'll modify it temporarily
     value[closestIndex] = nextValue;
 
     // Prevents the slider from shrinking below `props.minDistance`
@@ -212,7 +211,7 @@ export default class Slider extends Component {
       if (value[i + 1] - value[i] < this.props.minDistance) return;
     }
 
-    this.setState({value: value}, callback.bind(this, closestIndex));
+    this.setState({ value }, callback.bind(this, closestIndex));
   }
 
   getMousePosition = (e) => {
@@ -223,7 +222,7 @@ export default class Slider extends Component {
   }
 
   getTouchPosition = (e) => {
-    let touch = e.touches[0];
+    const touch = e.touches[0];
     return [
       touch['page' + this.axisKey()],
       touch['page' + this.orthogonalAxisKey()]
@@ -248,7 +247,7 @@ export default class Slider extends Component {
   createOnMouseDown = (i) => {
     return function createdOnMouseDown(e) {
       if (this.props.disabled) return;
-      let position = this.getMousePosition(e);
+      const position = this.getMousePosition(e);
       this.start(i, position[0]);
       this.addHandlers(this.getMouseEventMap());
       this.pauseEvent(e);
@@ -259,7 +258,7 @@ export default class Slider extends Component {
   createOnTouchStart = (i) => {
     return function createdOnTouchStart(e) {
       if (this.props.disabled || e.touches.length > 1) return;
-      let position = this.getTouchPosition(e);
+      const position = this.getTouchPosition(e);
       this.startPosition = position;
       this.isScrolling = undefined; // don't know yet if the user is trying to scroll
       this.start(i, position[0]);
@@ -269,7 +268,7 @@ export default class Slider extends Component {
   }
 
   addHandlers = (eventMap) => {
-    for (let key in eventMap) {
+    for (const key in eventMap) {
       if ({}.hasOwnProperty.call(eventMap, key)) {
         document.addEventListener(key, eventMap[key], false);
       }
@@ -277,7 +276,7 @@ export default class Slider extends Component {
   }
 
   removeHandlers = (eventMap) => {
-    for (let key in eventMap) {
+    for (const key in eventMap) {
       if ({}.hasOwnProperty.call(eventMap, key)) {
         document.removeEventListener(key, eventMap[key], false);
       }
@@ -294,7 +293,7 @@ export default class Slider extends Component {
 
     this.fireChangeEvent('onBeforeChange');
 
-    let zIndices = this.state.zIndices;
+    const zIndices = this.state.zIndices;
     zIndices.splice(zIndices.indexOf(i), 1); // remove wherever the element is
     zIndices.push(i); // add to end
 
@@ -302,7 +301,7 @@ export default class Slider extends Component {
       startValue: this.state.value[i],
       startPosition: position,
       index: i,
-      zIndices: zIndices
+      zIndices
     });
   }
 
@@ -316,27 +315,27 @@ export default class Slider extends Component {
 
   onEnd = (eventMap) => {
     this.removeHandlers(eventMap);
-    this.setState({index: -1}, this.fireChangeEvent.bind(this, 'onAfterChange'));
+    this.setState({ index: -1 }, this.fireChangeEvent.bind(this, 'onAfterChange'));
   }
 
   onMouseMove = (e) => {
-    let position = this.getMousePosition(e);
+    const position = this.getMousePosition(e);
     this.move(position[0]);
   }
 
   onTouchMove = (e) => {
     if (e.touches.length > 1) return;
 
-    let position = this.getTouchPosition(e);
+    const position = this.getTouchPosition(e);
 
     if (typeof this.isScrolling === 'undefined') {
-      let diffMainDir = position[0] - this.startPosition[0];
-      let diffScrollDir = position[1] - this.startPosition[1];
+      const diffMainDir = position[0] - this.startPosition[0];
+      const diffScrollDir = position[1] - this.startPosition[1];
       this.isScrolling = Math.abs(diffScrollDir) > Math.abs(diffMainDir);
     }
 
     if (this.isScrolling) {
-      this.setState({index: -1});
+      this.setState({ index: -1 });
       return;
     }
 
@@ -348,21 +347,21 @@ export default class Slider extends Component {
   move = (position) => {
     this.hasMoved = true;
 
-    let { max, min } = this.props;
-    let { index, value, startValue, sliderLength, handleSize } = this.state;
-    let oldValue = value[index];
+    const { max, min } = this.props;
+    const { index, value, startValue, sliderLength, handleSize } = this.state;
+    const oldValue = value[index];
 
-    let diffPosition = position - this.state.startPosition;
+    const diffPosition = position - this.state.startPosition;
 
-    let diffValue = diffPosition / (sliderLength - handleSize) * (max - min);
-    let newValue = this.trimAlignValue(startValue + diffValue);
+    const diffValue = diffPosition / (sliderLength - handleSize) * (max - min);
+    const newValue = this.trimAlignValue(startValue + diffValue);
 
     value[index] = newValue;
 
     // Normally you would use `shouldComponentUpdate`, but since the slider is a low-level component,
     // the extra complexity might be worth the extra performance.
     if (newValue !== oldValue) {
-      this.setState({value: value}, this.fireChangeEvent.bind(this, 'onChange'));
+      this.setState({ value }, this.fireChangeEvent.bind(this, 'onChange'));
     }
   }
 
@@ -378,7 +377,7 @@ export default class Slider extends Component {
 
   trimSucceeding = (length, nextValue, minDistance, max) => {
     for (let i = 0; i < length; i++) {
-      let padding = max - i * minDistance;
+      const padding = max - i * minDistance;
       if (nextValue[length - 1 - i] > padding) {
         nextValue[length - 1 - i] = padding;
       }
@@ -397,7 +396,7 @@ export default class Slider extends Component {
 
   trimPreceding = (length, nextValue, minDistance, min) => {
     for (let i = 0; i < length; i++) {
-      let padding = min + i * minDistance;
+      const padding = min + i * minDistance;
       if (nextValue[i] < padding) {
         nextValue[i] = padding;
       }
@@ -405,7 +404,7 @@ export default class Slider extends Component {
   }
 
   axisKey = () => {
-    let orientation = this.props.orientation;
+    const orientation = this.props.orientation;
     if (orientation === 'horizontal') return 'X';
     if (orientation === 'vertical') return 'Y';
   }
@@ -431,7 +430,7 @@ export default class Slider extends Component {
   }
 
   trimValue = (val, props) => {
-    let newProps = props || this.props;
+    const newProps = props || this.props;
 
     let newVal = val;
     if (val <= newProps.min) {
@@ -445,9 +444,9 @@ export default class Slider extends Component {
   }
 
   alignValue = (val, props) => {
-    let newProps = props || this.props;
+    const newProps = props || this.props;
 
-    let valModStep = (val - newProps.min) % newProps.step;
+    const valModStep = (val - newProps.min) % newProps.step;
     let alignValue = val - valModStep;
 
     if (Math.abs(valModStep) * 2 >= newProps.step) {
@@ -458,7 +457,7 @@ export default class Slider extends Component {
   }
 
   renderHandle = (child) => {
-    let offset = this.calcOffset(this.props.value);
+    const offset = this.calcOffset(this.props.value);
 
     return (
       <div
@@ -480,7 +479,7 @@ export default class Slider extends Component {
     if (this.props.disabled) return;
     this.hasMoved = false;
     if (!this.props.snapDragDisabled) {
-      let position = this.getMousePosition(e);
+      const position = this.getMousePosition(e);
       this.forceValueFromPosition(position[0], function forceValueFromPosition(i) {
         this.fireChangeEvent('onChange');
         this.start(i, position[0]);
@@ -495,8 +494,8 @@ export default class Slider extends Component {
     if (this.props.disabled) return;
 
     if (this.props.onSliderClick && !this.hasMoved) {
-      let position = this.getMousePosition(e);
-      let valueAtPos = this.trimAlignValue(this.calcValue(this.calcOffsetFromPosition(position[0])));
+      const position = this.getMousePosition(e);
+      const valueAtPos = this.trimAlignValue(this.calcValue(this.calcOffsetFromPosition(position[0])));
       this.props.onSliderClick(valueAtPos);
     }
   }
@@ -509,7 +508,7 @@ export default class Slider extends Component {
 
   renderValue = () => {
     const { value, min, max } = this.props;
-    let style = {
+    const style = {
       position: 'absolute',
       left: this.calcOffset(value) + 6,
       color: this.props.theme.base06
@@ -522,9 +521,9 @@ export default class Slider extends Component {
   }
 
   render() {
-    let bars = this.renderBar();
-    let handle = this.renderHandle(null);
-    let currentValue = this.renderValue();
+    const bars = this.renderBar();
+    const handle = this.renderHandle(null);
+    const currentValue = this.renderValue();
 
     return (
       <div>

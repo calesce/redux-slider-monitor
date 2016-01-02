@@ -50,8 +50,9 @@ export default class Footer extends Component {
 
     return (
       <a className={classnames({ selected: filter === selectedFilter })}
-         style={{ cursor: 'hand' }}
-         onClick={() => onShow(filter)}>
+        style={{ cursor: 'hand' }}
+        onClick={() => onShow(filter)}
+      >
         {title}
       </a>
     );
@@ -62,7 +63,8 @@ export default class Footer extends Component {
     if (markedCount > 0) {
       return (
         <button className='clear-completed'
-                onClick={onClearMarked} >
+          onClick={onClearMarked}
+        >
           Clear completed
         </button>
       );

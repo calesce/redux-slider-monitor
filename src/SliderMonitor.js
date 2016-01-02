@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import { findDOMNode } from 'react-dom';
 import * as themes from 'redux-devtools-themes';
 import { ActionCreators } from 'redux-devtools';
 
@@ -11,22 +10,10 @@ const { reset, jumpToState } = ActionCreators;
 export default class SliderMonitor extends Component {
   static update = reducer;
 
-  constructor(props) {
-    super(props);
-
-    if (typeof window !== 'undefined') {
-      window.addEventListener('keydown', this.handleKeyPress);
-    }
-
-    this.state = {
-      timer: undefined,
-      replaySpeed: '1x'
-    };
-  }
-
   static propTypes = {
     dispatch: PropTypes.func,
     computedStates: PropTypes.array,
+    stagedActionIds: PropTypes.array,
     actionsById: PropTypes.object,
     currentStateIndex: PropTypes.number,
     monitorState: PropTypes.shape({
@@ -47,33 +34,32 @@ export default class SliderMonitor extends Component {
     preserveScrollTop: true
   };
 
-  componentWillReceiveProps(nextProps) {
-    const node = findDOMNode(this);
-    if (!node) {
-      this.scrollDown = true;
-    } else if (
-      this.props.stagedActionIds.length < nextProps.stagedActionIds.length
-    ) {
-      const { scrollTop, offsetHeight, scrollHeight } = node;
+  constructor(props) {
+    super(props);
 
-      this.scrollDown = Math.abs(
-        scrollHeight - (scrollTop + offsetHeight)
-      ) < 20;
-    } else {
-      this.scrollDown = false;
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', this.handleKeyPress);
     }
+
+    this.state = {
+      timer: undefined,
+      replaySpeed: '1x'
+    };
   }
 
-  componentDidUpdate() {
-    const node = findDOMNode(this);
-    if (!node) {
-      return;
+  setUpTheme = () => {
+    let theme;
+    if (typeof this.props.theme === 'string') {
+      if (typeof themes[this.props.theme] !== 'undefined') {
+        theme = themes[this.props.theme];
+      } else {
+        theme = themes.nicinabox;
+      }
+    } else {
+      theme = this.props.theme;
     }
-    if (this.scrollDown) {
-      const { offsetHeight, scrollHeight } = node;
-      node.scrollTop = scrollHeight - offsetHeight;
-      this.scrollDown = false;
-    }
+
+    return theme;
   }
 
   handleReset = () => {
@@ -116,7 +102,7 @@ export default class SliderMonitor extends Component {
     if (computedStates.length < 2) {
       return;
     }
-    let speed = this.state.replaySpeed === '1x' ? 500 : 200;
+    const speed = this.state.replaySpeed === '1x' ? 500 : 200;
 
     let stateIndex;
     if (currentStateIndex === computedStates.length - 1) {
@@ -131,7 +117,7 @@ export default class SliderMonitor extends Component {
     }
 
     let counter = stateIndex;
-    let timer = setInterval(() => {
+    const timer = setInterval(() => {
       if (counter + 1 <= computedStates.length - 1) {
         dispatch(jumpToState(counter + 1));
       }
@@ -166,8 +152,8 @@ export default class SliderMonitor extends Component {
     let currentTimestamp = Date.now();
     let timestampDiff = this.getLatestTimestampDiff(index);
 
-    let aLoop = () => {
-      let replayDiff = Date.now() - currentTimestamp;
+    const aLoop = () => {
+      const replayDiff = Date.now() - currentTimestamp;
       if (replayDiff >= timestampDiff) {
         this.props.dispatch(jumpToState(this.props.currentStateIndex + 1));
 
@@ -200,8 +186,7 @@ export default class SliderMonitor extends Component {
   }
 
   getTimestampOfStateIndex = (stateIndex) => {
-    let id = this.props.stagedActionIds[stateIndex];
-
+    const id = this.props.stagedActionIds[stateIndex];
     return this.props.actionsById[id].timestamp;
   }
 
@@ -238,14 +223,14 @@ export default class SliderMonitor extends Component {
   changeReplaySpeed = () => {
     let replaySpeed;
     switch (this.state.replaySpeed) {
-    case '1x':
-      replaySpeed = '2x';
-      break;
-    case '2x':
-      replaySpeed = 'Live';
-      break;
-    default:
-      replaySpeed = '1x';
+      case '1x':
+        replaySpeed = '2x';
+        break;
+      case '2x':
+        replaySpeed = 'Live';
+        break;
+      default:
+        replaySpeed = '1x';
     }
 
     this.setState({ replaySpeed });
@@ -284,7 +269,7 @@ export default class SliderMonitor extends Component {
   }
 
   renderPlayButton(theme) {
-    let play = this.state.replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
+    const play = this.state.replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
 
     return (
       <a onClick={play} style={{ paddingBottom: 50 }}>
@@ -334,7 +319,7 @@ export default class SliderMonitor extends Component {
   }
 
   renderPlaybackSpeedButton = (theme) => {
-    let style = {
+    const style = {
       cursor: 'hand',
       color: theme.base06,
       fontSize: this.state.replaySpeed === 'Live' ? '1.1em' : '1.8em',
@@ -348,24 +333,9 @@ export default class SliderMonitor extends Component {
     );
   }
 
-  setUpTheme = () => {
-    let theme;
-    if (typeof this.props.theme === 'string') {
-      if (typeof themes[this.props.theme] !== 'undefined') {
-        theme = themes[this.props.theme];
-      } else {
-        theme = themes.nicinabox;
-      }
-    } else {
-      theme = this.props.theme;
-    }
-
-    return theme;
-  }
-
   render() {
     const { currentStateIndex, computedStates } = this.props;
-    let theme = this.setUpTheme();
+    const theme = this.setUpTheme();
 
     return (
       <div style={this.containerStyle(theme)}>
@@ -383,7 +353,8 @@ export default class SliderMonitor extends Component {
         { this.renderStepRightButton(theme) }
         { this.renderPlaybackSpeedButton(theme) }
         <a onClick={this.handleReset}
-           style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, paddingBottom: 50 }}>
+          style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, paddingBottom: 50 }}
+        >
           <small>Reset</small>
         </a>
       </div>
