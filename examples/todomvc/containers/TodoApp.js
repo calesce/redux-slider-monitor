@@ -8,7 +8,7 @@ import * as TodoActions from '../actions/TodoActions';
 class TodoApp extends Component {
   static propTypes = {
     todos: PropTypes.array,
-    actions: PropTypes.array
+    actions: PropTypes.object
   };
 
   render() {
