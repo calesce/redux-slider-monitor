@@ -19,7 +19,7 @@ export default class SliderButton extends Component {
 
   renderPlayButton() {
     return (
-      <a onClick={this.props.onClick} style={{ paddingBottom: 50 }}>
+      <a onClick={this.props.onClick} style={{ flex: 1 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >
@@ -31,7 +31,7 @@ export default class SliderButton extends Component {
 
   renderPauseButton = () => {
     return (
-      <a onClick={this.props.onClick} style={{ paddingBottom: 50 }}>
+      <a onClick={this.props.onClick} style={{ flex: 1 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >
@@ -47,7 +47,7 @@ export default class SliderButton extends Component {
       'M8.59 16.34l4.58-4.59-4.58-4.59 1.41-1.41 6 6-6 6z';
 
     return (
-      <a onClick={this.props.onClick} style={{ paddingBottom: 50 }}>
+      <a onClick={this.props.onClick} style={{ flex: 1 }}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
           style={this.iconStyle()}
         >
@@ -62,7 +62,7 @@ export default class SliderButton extends Component {
       cursor: 'hand',
       color: this.props.theme.base06,
       fontSize: this.props.replaySpeed === 'Live' ? '1.1em' : '1.8em',
-      paddingBottom: 50
+      flex: 1
     };
 
     return (

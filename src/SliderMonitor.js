@@ -249,11 +249,12 @@ export default class SliderMonitor extends Component {
 
   containerStyle = (theme) => {
     return {
+      height: '85%',
       fontFamily: 'monospace',
       position: 'relative',
-      padding: '1.1rem',
+      padding: '0.7rem',
       display: 'flex',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
       alignItems: 'center',
       background: theme.base00,
       WebkitUserSelect: 'none', MozUserSelect: 'none', MsUserSelect: 'none'
@@ -273,7 +274,7 @@ export default class SliderMonitor extends Component {
     return (
       <div style={this.containerStyle(theme)}>
         {playPause}
-        <div style={{ width: '80%', height: '100%' }}>
+        <div style={{ flex: 18 }}>
           <Slider
             min={0}
             max={computedStates.length - 1}
@@ -286,7 +287,7 @@ export default class SliderMonitor extends Component {
         <SliderButton theme={theme} type='stepRight' onClick={this.stepRight} />
         <SliderButton theme={theme} type='playBackSpeed' replaySpeed={replaySpeed} onClick={this.changeReplaySpeed} />
         <a onClick={this.handleReset}
-          style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, paddingBottom: 50 }}
+          style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, flex: 1 }}
         >
           <small>Reset</small>
         </a>
