@@ -109,7 +109,7 @@ export default class Slider extends Component {
     }
   }
 
-  componentDidMount = () => {
+  updateSlider = () => {
     const slider = findDOMNode(this.refs.slider);
     const handle = findDOMNode(this.refs.handle);
     const rect = slider.getBoundingClientRect();
@@ -125,6 +125,19 @@ export default class Slider extends Component {
       handleSize: handle[size],
       sliderStart: sliderMin
     });
+  }
+
+  componentDidMount = () => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.updateSlider);
+    }
+    this.updateSlider();
+  }
+
+  componentWillUnmount = () => {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.updateSlider);
+    }
   }
 
   getValue = () => {
