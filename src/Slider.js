@@ -129,14 +129,16 @@ export default class Slider extends Component {
 
   componentDidMount = () => {
     if (typeof window !== 'undefined') {
-      window.addEventListener('resize', this.updateSlider);
+      const ResizeSensor = require('css-element-queries/src/ResizeSensor');
+      const slider = findDOMNode(this.refs.slider);
+      this.sliderResizeSensor = new ResizeSensor(slider, this.updateSlider);
     }
     this.updateSlider();
   }
 
   componentWillUnmount = () => {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('resize', this.updateSlider);
+    if (this.sliderResizeSensor) {
+      this.sliderResizeSensor.detach();
     }
   }
 
