@@ -36,6 +36,7 @@
     "redux-devtools": "^3.0.0"
   },
   "dependencies": {
+    "css-element-queries": "^0.3.2",
     "redux-devtools-themes": "^1.0.0"
   }
 }
