@@ -31,7 +31,7 @@
     "rimraf": "^2.3.4"
   },
   "peerDependencies": {
-    "react": "^0.14.0",
+    "react": "^0.14.0 || ^15.0.0",
     "react-dom": "^0.14.0",
     "redux-devtools": "^3.0.0"
   },
