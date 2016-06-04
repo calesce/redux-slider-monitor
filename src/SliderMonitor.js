@@ -249,10 +249,10 @@ export default class SliderMonitor extends Component {
 
   containerStyle = (theme) => {
     return {
-      height: '85%',
+      height: '100%',
       fontFamily: 'monospace',
       position: 'relative',
-      padding: '0.7rem',
+      padding: '0 0.7rem 0.7rem 0.7rem',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
