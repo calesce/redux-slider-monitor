@@ -20,7 +20,9 @@ module.exports = {
   resolve: {
     alias: {
       'redux-slider-monitor': path.join(__dirname, '..', '..', 'src/SliderMonitor'),
-      'react': path.join(__dirname, 'node_modules', 'react')
+      'react': path.join(__dirname, 'node_modules', 'react'),
+      'react-dom': path.join(__dirname, 'node_modules', 'react-dom'),
+      'redux-devtools': path.join(__dirname, 'node_modules', 'redux-devtools')
     },
     extensions: ['', '.js']
   },

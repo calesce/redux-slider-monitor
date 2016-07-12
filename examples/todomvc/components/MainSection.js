@@ -17,6 +17,8 @@ export default class MainSection extends Component {
 
   constructor(props, context) {
     super(props, context);
+    this.handleClearMarked = this.handleClearMarked.bind(this);
+    this.handleShow = this.handleShow.bind(this);
     this.state = { filter: SHOW_ALL };
   }
 
