@@ -8,10 +8,10 @@ export default class SliderButton extends Component {
     onClick: PropTypes.func
   }
 
-  iconStyle() {
+  iconStyle(theme) {
     return {
       cursor: 'hand',
-      fill: this.props.theme.base06,
+      fill: theme.base06,
       width: '2.3rem',
       height: '2.3rem'
     };
@@ -20,8 +20,8 @@ export default class SliderButton extends Component {
   renderPlayButton() {
     return (
       <a onClick={this.props.onClick} style={{ flex: 1 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
+          style={this.iconStyle(this.props.theme)}
         >
           <g><path d='M8 5v14l11-7z'></path></g>
         </svg>
@@ -32,8 +32,8 @@ export default class SliderButton extends Component {
   renderPauseButton = () => {
     return (
       <a onClick={this.props.onClick} style={{ flex: 1 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
+          style={this.iconStyle(this.props.theme)}
         >
           <g><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'></path></g>
         </svg>
@@ -48,8 +48,8 @@ export default class SliderButton extends Component {
 
     return (
       <a onClick={this.props.onClick} style={{ flex: 1 }}>
-        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet' fit
-          style={this.iconStyle()}
+        <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
+          style={this.iconStyle(this.props.theme)}
         >
           <g><path d={d}></path></g>
         </svg>
