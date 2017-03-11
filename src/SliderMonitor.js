@@ -23,6 +23,7 @@ export default class SliderMonitor extends Component {
     preserveScrollTop: PropTypes.bool,
     stagedActions: PropTypes.array,
     select: PropTypes.func.isRequired,
+    hideResetButton: PropTypes.bool,
     theme: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.string
@@ -236,7 +237,7 @@ export default class SliderMonitor extends Component {
   }
 
   render() {
-    const { currentStateIndex, computedStates } = this.props;
+    const { currentStateIndex, computedStates, hideResetButton } = this.props;
     const { replaySpeed } = this.state;
     const theme = this.setUpTheme();
 
@@ -265,7 +266,9 @@ export default class SliderMonitor extends Component {
           onClick={this.changeReplaySpeed}
         />
         <Divider />
-        <Button theme={theme} onClick={this.handleReset}>Reset</Button>
+        {!hideResetButton &&
+          <Button theme={theme} onClick={this.handleReset}>Reset</Button>
+        }
       </Toolbar>
     );
   }
