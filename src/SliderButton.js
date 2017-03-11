@@ -8,12 +8,12 @@ export default class SliderButton extends Component {
     onClick: PropTypes.func
   }
 
-  iconStyle(theme) {
+  iconStyle() {
     return {
       cursor: 'hand',
-      fill: theme.base06,
-      width: '2.3rem',
-      height: '2.3rem'
+      fill: this.props.theme.base06,
+      width: '1.8rem',
+      height: '1.8rem'
     };
   }
 
@@ -21,7 +21,7 @@ export default class SliderButton extends Component {
     return (
       <Button onClick={this.props.onClick} title='Play' size='small' theme={this.props.theme}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
-          style={this.iconStyle(this.props.theme)}
+          style={this.iconStyle()}
         >
           <g><path d='M8 5v14l11-7z'></path></g>
         </svg>
@@ -33,7 +33,7 @@ export default class SliderButton extends Component {
     return (
       <Button onClick={this.props.onClick} title='Pause' size='small' theme={this.props.theme}>
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
-          style={this.iconStyle(this.props.theme)}
+          style={this.iconStyle()}
         >
           <g><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'></path></g>
         </svg>
@@ -55,7 +55,7 @@ export default class SliderButton extends Component {
         theme={this.props.theme}
       >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
-          style={this.iconStyle(this.props.theme)}
+          style={this.iconStyle()}
         >
           <g><path d={d}></path></g>
         </svg>

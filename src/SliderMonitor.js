@@ -258,17 +258,17 @@ export default class SliderMonitor extends Component {
         />
         <SliderButton theme={theme} type='stepLeft' onClick={this.stepLeft} />
         <SliderButton theme={theme} type='stepRight' onClick={this.stepRight} />
-        <Divider />
+        <Divider theme={theme} />
         <SegmentedControl
           theme={theme}
           values={['live', '1x', '2x']}
           selected={replaySpeed}
           onClick={this.changeReplaySpeed}
         />
-        <Divider />
-        {!hideResetButton &&
-          <Button theme={theme} onClick={this.handleReset}>Reset</Button>
-        }
+        {!hideResetButton && [
+          <Divider key='divider' theme={theme} />,
+          <Button key='reset' theme={theme} onClick={this.handleReset}>Reset</Button>
+        ]}
       </Toolbar>
     );
   }
