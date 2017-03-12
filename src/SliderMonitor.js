@@ -237,27 +237,41 @@ export default class SliderMonitor extends Component {
   }
 
   render() {
-    const { currentStateIndex, computedStates, hideResetButton } = this.props;
+    const {
+      currentStateIndex, computedStates, actionsById, stagedActionIds, hideResetButton
+    } = this.props;
     const { replaySpeed } = this.state;
     const theme = this.setUpTheme();
+
+    const max = computedStates.length - 1;
 
     const onPlayClick = replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
     const playPause = this.state.timer ?
       <SliderButton theme={theme} type='pause' onClick={this.pauseReplay} /> :
-      <SliderButton theme={theme} type='play' onClick={onPlayClick} />;
+      <SliderButton theme={theme} type='play' disabled={max <= 0} onClick={onPlayClick} />;
 
     return (
       <Toolbar noBorder compact fullHeight theme={theme}>
         {playPause}
         <Slider
           min={0}
-          max={computedStates.length - 1}
+          max={max}
           value={currentStateIndex}
           onChange={this.handleSliderChange}
           theme={theme}
         />
-        <SliderButton theme={theme} type='stepLeft' onClick={this.stepLeft} />
-        <SliderButton theme={theme} type='stepRight' onClick={this.stepRight} />
+        <SliderButton
+          theme={theme}
+          type='stepLeft'
+          disabled={currentStateIndex <= 0}
+          onClick={this.stepLeft}
+        />
+        <SliderButton
+          theme={theme}
+          type='stepRight'
+          disabled={currentStateIndex === max}
+          onClick={this.stepRight}
+        />
         <Divider theme={theme} />
         <SegmentedControl
           theme={theme}

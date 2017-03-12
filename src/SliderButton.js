@@ -5,6 +5,7 @@ export default class SliderButton extends Component {
   static propTypes = {
     theme: PropTypes.object,
     type: PropTypes.string,
+    disabled: PropTypes.bool,
     onClick: PropTypes.func
   }
 
@@ -19,7 +20,13 @@ export default class SliderButton extends Component {
 
   renderPlayButton() {
     return (
-      <Button onClick={this.props.onClick} title='Play' size='small' theme={this.props.theme}>
+      <Button
+        onClick={this.props.onClick}
+        title='Play'
+        size='small'
+        disabled={this.props.disabled}
+        theme={this.props.theme}
+      >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
           style={this.iconStyle()}
         >
@@ -31,7 +38,13 @@ export default class SliderButton extends Component {
 
   renderPauseButton = () => {
     return (
-      <Button onClick={this.props.onClick} title='Pause' size='small' theme={this.props.theme}>
+      <Button
+        onClick={this.props.onClick}
+        title='Pause'
+        size='small'
+        disabled={this.props.disabled}
+        theme={this.props.theme}
+      >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
           style={this.iconStyle()}
         >
@@ -52,6 +65,7 @@ export default class SliderButton extends Component {
         size='small'
         title={isLeft ? 'Go back' : 'Go forward'}
         onClick={this.props.onClick}
+        disabled={this.props.disabled}
         theme={this.props.theme}
       >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
