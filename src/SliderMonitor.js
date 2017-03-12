@@ -244,6 +244,11 @@ export default class SliderMonitor extends Component {
     const theme = this.setUpTheme();
 
     const max = computedStates.length - 1;
+    const actionId = stagedActionIds[currentStateIndex];
+    let actionType = actionsById[actionId].action.type;
+    if (actionType === undefined) actionType = '<UNDEFINED>';
+    else if (actionType === null) actionType = '<NULL>';
+    else actionType = actionType.toString() || '<EMPTY>';
 
     const onPlayClick = replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
     const playPause = this.state.timer ?
@@ -254,6 +259,8 @@ export default class SliderMonitor extends Component {
       <Toolbar noBorder compact fullHeight theme={theme}>
         {playPause}
         <Slider
+          label={actionType}
+          sublabel={`(${actionId})`}
           min={0}
           max={max}
           value={currentStateIndex}
