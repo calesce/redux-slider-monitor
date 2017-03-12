@@ -9,6 +9,10 @@ export default class SliderButton extends Component {
     onClick: PropTypes.func
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.type !== nextProps.type || this.props.disabled !== nextProps.disabled;
+  }
+
   iconStyle() {
     return {
       cursor: 'hand',

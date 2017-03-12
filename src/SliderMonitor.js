@@ -1,4 +1,4 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, Component, PureComponent } from 'react';
 import * as themes from 'redux-devtools-themes';
 import { ActionCreators } from 'redux-devtools';
 import { Toolbar, Slider, Button, SegmentedControl, Divider } from 'devui';
@@ -8,7 +8,7 @@ import SliderButton from './SliderButton';
 
 const { reset, jumpToState } = ActionCreators;
 
-export default class SliderMonitor extends Component {
+export default class SliderMonitor extends (PureComponent || Component) {
   static update = reducer;
 
   static propTypes = {
