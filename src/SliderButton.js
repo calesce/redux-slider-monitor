@@ -1,16 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PureComponent, PropTypes } from 'react';
 import { Button } from 'devui';
 
-export default class SliderButton extends Component {
+export default class SliderButton extends (PureComponent || Component) {
   static propTypes = {
     theme: PropTypes.object,
     type: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func
-  }
-
-  shouldComponentUpdate(nextProps) {
-    return this.props.type !== nextProps.type || this.props.disabled !== nextProps.disabled;
   }
 
   iconStyle() {

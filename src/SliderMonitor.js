@@ -282,7 +282,7 @@ export default class SliderMonitor extends (PureComponent || Component) {
         <Divider theme={theme} />
         <SegmentedControl
           theme={theme}
-          values={['live', '1x', '2x']}
+          values={['Live', '1x', '2x']}
           selected={replaySpeed}
           onClick={this.changeReplaySpeed}
         />
