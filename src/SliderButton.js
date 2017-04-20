@@ -1,74 +1,79 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PureComponent, PropTypes } from 'react';
+import { Button } from 'devui';
 
-export default class SliderButton extends Component {
+export default class SliderButton extends (PureComponent || Component) {
   static propTypes = {
     theme: PropTypes.object,
-    replaySpeed: PropTypes.string,
     type: PropTypes.string,
+    disabled: PropTypes.bool,
     onClick: PropTypes.func
   }
 
-  iconStyle(theme) {
+  iconStyle() {
     return {
       cursor: 'hand',
-      fill: theme.base06,
-      width: '2.3rem',
-      height: '2.3rem'
+      fill: this.props.theme.base06,
+      width: '1.8rem',
+      height: '1.8rem'
     };
   }
 
   renderPlayButton() {
     return (
-      <a onClick={this.props.onClick} style={{ flex: 1 }}>
+      <Button
+        onClick={this.props.onClick}
+        title='Play'
+        size='small'
+        disabled={this.props.disabled}
+        theme={this.props.theme}
+      >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
-          style={this.iconStyle(this.props.theme)}
+          style={this.iconStyle()}
         >
           <g><path d='M8 5v14l11-7z'></path></g>
         </svg>
-      </a>
+      </Button>
     );
   }
 
   renderPauseButton = () => {
     return (
-      <a onClick={this.props.onClick} style={{ flex: 1 }}>
+      <Button
+        onClick={this.props.onClick}
+        title='Pause'
+        size='small'
+        disabled={this.props.disabled}
+        theme={this.props.theme}
+      >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
-          style={this.iconStyle(this.props.theme)}
+          style={this.iconStyle()}
         >
           <g><path d='M6 19h4V5H6v14zm8-14v14h4V5h-4z'></path></g>
         </svg>
-      </a>
+      </Button>
     );
   }
 
   renderStepButton = (direction) => {
-    const d = direction === 'left' ?
+    const isLeft = direction === 'left';
+    const d = isLeft ?
       'M15.41 16.09l-4.58-4.59 4.58-4.59-1.41-1.41-6 6 6 6z' :
       'M8.59 16.34l4.58-4.59-4.58-4.59 1.41-1.41 6 6-6 6z';
 
     return (
-      <a onClick={this.props.onClick} style={{ flex: 1 }}>
+      <Button
+        size='small'
+        title={isLeft ? 'Go back' : 'Go forward'}
+        onClick={this.props.onClick}
+        disabled={this.props.disabled}
+        theme={this.props.theme}
+      >
         <svg viewBox='0 0 24 24' preserveAspectRatio='xMidYMid meet'
-          style={this.iconStyle(this.props.theme)}
+          style={this.iconStyle()}
         >
           <g><path d={d}></path></g>
         </svg>
-      </a>
-    );
-  }
-
-  renderPlaybackSpeedButton = () => {
-    const style = {
-      cursor: 'hand',
-      color: this.props.theme.base06,
-      fontSize: this.props.replaySpeed === 'Live' ? '1.1em' : '1.8em',
-      flex: 1
-    };
-
-    return (
-      <div style={style} onClick={this.props.onClick}>
-        { this.props.replaySpeed }
-      </div>
+      </Button>
     );
   }
 
@@ -82,8 +87,6 @@ export default class SliderButton extends Component {
         return this.renderStepButton('left');
       case 'stepRight':
         return this.renderStepButton('right');
-      case 'playBackSpeed':
-        return this.renderPlaybackSpeedButton();
       default:
         return null;
     }

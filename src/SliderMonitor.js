@@ -1,14 +1,14 @@
-import React, { PropTypes, Component } from 'react';
+import React, { PropTypes, Component, PureComponent } from 'react';
 import * as themes from 'redux-devtools-themes';
 import { ActionCreators } from 'redux-devtools';
+import { Toolbar, Slider, Button, SegmentedControl, Divider } from 'devui';
 
 import reducer from './reducers';
-import Slider from './Slider';
 import SliderButton from './SliderButton';
 
 const { reset, jumpToState } = ActionCreators;
 
-export default class SliderMonitor extends Component {
+export default class SliderMonitor extends (PureComponent || Component) {
   static update = reducer;
 
   static propTypes = {
@@ -23,6 +23,7 @@ export default class SliderMonitor extends Component {
     preserveScrollTop: PropTypes.bool,
     stagedActions: PropTypes.array,
     select: PropTypes.func.isRequired,
+    hideResetButton: PropTypes.bool,
     theme: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.string
@@ -221,19 +222,7 @@ export default class SliderMonitor extends Component {
     }
   }
 
-  changeReplaySpeed = () => {
-    let replaySpeed;
-    switch (this.state.replaySpeed) {
-      case '1x':
-        replaySpeed = '2x';
-        break;
-      case '2x':
-        replaySpeed = 'Live';
-        break;
-      default:
-        replaySpeed = '1x';
-    }
-
+  changeReplaySpeed = (replaySpeed) => {
     this.setState({ replaySpeed });
 
     if (this.state.timer) {
@@ -247,51 +236,61 @@ export default class SliderMonitor extends Component {
     }
   }
 
-  containerStyle = (theme) => {
-    return {
-      height: '100%',
-      fontFamily: 'monospace',
-      position: 'relative',
-      padding: '0 0.7rem 0.7rem 0.7rem',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      background: theme.base00,
-      WebkitUserSelect: 'none', MozUserSelect: 'none', MsUserSelect: 'none'
-    };
-  }
-
   render() {
-    const { currentStateIndex, computedStates } = this.props;
+    const {
+      currentStateIndex, computedStates, actionsById, stagedActionIds, hideResetButton
+    } = this.props;
     const { replaySpeed } = this.state;
     const theme = this.setUpTheme();
+
+    const max = computedStates.length - 1;
+    const actionId = stagedActionIds[currentStateIndex];
+    let actionType = actionsById[actionId].action.type;
+    if (actionType === undefined) actionType = '<UNDEFINED>';
+    else if (actionType === null) actionType = '<NULL>';
+    else actionType = actionType.toString() || '<EMPTY>';
 
     const onPlayClick = replaySpeed === 'Live' ? this.startRealtimeReplay : this.startReplay;
     const playPause = this.state.timer ?
       <SliderButton theme={theme} type='pause' onClick={this.pauseReplay} /> :
-      <SliderButton theme={theme} type='play' onClick={onPlayClick} />;
+      <SliderButton theme={theme} type='play' disabled={max <= 0} onClick={onPlayClick} />;
 
     return (
-      <div style={this.containerStyle(theme)}>
+      <Toolbar noBorder compact fullHeight theme={theme}>
         {playPause}
-        <div style={{ flex: 18 }}>
-          <Slider
-            min={0}
-            max={computedStates.length - 1}
-            value={currentStateIndex}
-            onChange={this.handleSliderChange}
-            theme={theme}
-          />
-        </div>
-        <SliderButton theme={theme} type='stepLeft' onClick={this.stepLeft} />
-        <SliderButton theme={theme} type='stepRight' onClick={this.stepRight} />
-        <SliderButton theme={theme} type='playBackSpeed' replaySpeed={replaySpeed} onClick={this.changeReplaySpeed} />
-        <a onClick={this.handleReset}
-          style={{ textDecoration: 'underline', cursor: 'hand', color: theme.base06, flex: 1 }}
-        >
-          <small>Reset</small>
-        </a>
-      </div>
+        <Slider
+          label={actionType}
+          sublabel={`(${actionId})`}
+          min={0}
+          max={max}
+          value={currentStateIndex}
+          onChange={this.handleSliderChange}
+          theme={theme}
+        />
+        <SliderButton
+          theme={theme}
+          type='stepLeft'
+          disabled={currentStateIndex <= 0}
+          onClick={this.stepLeft}
+        />
+        <SliderButton
+          theme={theme}
+          type='stepRight'
+          disabled={currentStateIndex === max}
+          onClick={this.stepRight}
+        />
+        <Divider theme={theme} />
+        <SegmentedControl
+          theme={theme}
+          values={['Live', '1x', '2x']}
+          selected={replaySpeed}
+          onClick={this.changeReplaySpeed}
+        />
+        {!hideResetButton && [
+          <Divider key='divider' theme={theme} />,
+          <Button key='reset' theme={theme} onClick={this.handleReset}>Reset</Button>
+        ]}
+      </Toolbar>
     );
   }
 }
