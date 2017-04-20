@@ -32,7 +32,7 @@ Click the play/pause buttons to watch the state changes over time, or step backw
 
 ## Keyboard shortcuts
 
-Pass the ```keyBoardEnabled``` prop to use these shortcuts
+Pass the ```keyboardEnabled``` prop to use these shortcuts
 
 ```ctrl+j```: play/pause
 
