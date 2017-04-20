@@ -39,7 +39,7 @@ export default class MainSection extends Component {
 
     const filteredTodos = todos.filter(TODO_FILTERS[filter]);
     const markedCount = todos.reduce((count, todo) =>
-      todo.marked ? count + 1 : count,
+      (todo.marked ? count + 1 : count),
       0
     );
 
@@ -60,13 +60,15 @@ export default class MainSection extends Component {
     const { todos, actions } = this.props;
     if (todos.length > 0) {
       return (
-        <input className='toggle-all'
+        <input
+          className='toggle-all'
           type='checkbox'
           checked={markedCount === todos.length}
           onChange={actions.markAll}
         />
       );
     }
+    return null;
   }
 
   renderFooter(markedCount) {
@@ -76,7 +78,8 @@ export default class MainSection extends Component {
 
     if (todos.length) {
       return (
-        <Footer markedCount={markedCount}
+        <Footer
+          markedCount={markedCount}
           unmarkedCount={unmarkedCount}
           filter={filter}
           onClearMarked={this.handleClearMarked}
@@ -84,5 +87,6 @@ export default class MainSection extends Component {
         />
       );
     }
+    return null;
   }
 }

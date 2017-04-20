@@ -1,27 +1,21 @@
-import React, { Component, PropTypes } from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import Header from '../components/Header';
 import MainSection from '../components/MainSection';
 import * as TodoActions from '../actions/TodoActions';
 
-class TodoApp extends Component {
-  static propTypes = {
-    todos: PropTypes.array,
-    actions: PropTypes.object
-  };
+const TodoApp = ({ todos, actions }) => (
+  <div>
+    <Header addTodo={actions.addTodo} />
+    <MainSection todos={todos} actions={actions} />
+  </div>
+);
 
-  render() {
-    const { todos, actions } = this.props;
-
-    return (
-      <div>
-        <Header addTodo={actions.addTodo} />
-        <MainSection todos={todos} actions={actions} />
-      </div>
-    );
-  }
-}
+TodoApp.propTypes = {
+  todos: PropTypes.array.isRequired,
+  actions: PropTypes.object.isRequired
+};
 
 function mapState(state) {
   return {

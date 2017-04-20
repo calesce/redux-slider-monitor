@@ -16,8 +16,9 @@ export default function configureStore(initialState) {
   const store = finalCreateStore(rootReducer, initialState);
 
   if (module.hot) {
+    /* eslint-disable global-require */
     module.hot.accept('../reducers', () =>
-      store.replaceReducer(require('../reducers'))
+      store.replaceReducer(require('../reducers').default)
     );
   }
 
