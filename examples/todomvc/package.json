@@ -4,7 +4,7 @@
   "description": "TodoMVC example for redux",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -24,12 +24,12 @@
     "babel-preset-stage-0": "^6.24.1",
     "node-libs-browser": "^0.5.2",
     "raw-loader": "^0.5.1",
-    "react-hot-loader": "^1.2.7",
+    "react-hot-loader": "^3.0.0-beta.6",
     "redux-devtools-dock-monitor": "^1.0.1",
     "redux-devtools-log-monitor": "^1.0.1",
-    "style-loader": "^0.12.3",
+    "style-loader": "^0.16.1",
     "todomvc-app-css": "^2.0.1",
-    "webpack": "^1.9.11",
-    "webpack-dev-server": "^1.9.0"
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
   }
 }
