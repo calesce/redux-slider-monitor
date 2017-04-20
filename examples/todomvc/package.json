@@ -12,8 +12,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "classnames": "^2.1.2",
-    "react-dom": "^0.14.0"
+    "classnames": "^2.1.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

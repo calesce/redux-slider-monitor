@@ -1,4 +1,5 @@
-import React, { PropTypes, Component, PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import * as themes from 'redux-devtools-themes';
 import { ActionCreators } from 'redux-devtools';
 import { Toolbar, Slider, Button, SegmentedControl, Divider } from 'devui';
