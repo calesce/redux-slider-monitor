@@ -27,26 +27,32 @@ export default class SliderMonitor extends (PureComponent || Component) {
     theme: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.string
-    ])
+    ]),
+    keyboardEnabled: PropTypes.bool
   };
 
   static defaultProps = {
     select: (state) => state,
     theme: 'nicinabox',
-    preserveScrollTop: true
+    preserveScrollTop: true,
+    keyboardEnabled: true
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    timer: undefined,
+    replaySpeed: '1x'
+  };
 
+  componentDidMount() {
     if (typeof window !== 'undefined') {
       window.addEventListener('keydown', this.handleKeyPress);
     }
+  }
 
-    this.state = {
-      timer: undefined,
-      replaySpeed: '1x'
-    };
+  componentWillUnmount() {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('keydown', this.handleKeyPress);
+    }
   }
 
   setUpTheme = () => {
@@ -69,6 +75,9 @@ export default class SliderMonitor extends (PureComponent || Component) {
   }
 
   handleKeyPress = (event) => {
+    if (!this.props.keyboardEnabled) {
+      return null;
+    }
     if (event.ctrlKey && event.keyCode === 74) { // ctrl+j
       event.preventDefault();
 
