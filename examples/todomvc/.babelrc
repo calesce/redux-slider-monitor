@@ -1,4 +1,10 @@
 {
-  "stage": 0,
-  "loose": "all"
+  "presets": [
+    ["es2015", { "modules": false }],
+    "stage-0",
+    "react"
+  ],
+  "plugins": [
+    "react-hot-loader/babel"
+  ]
 }

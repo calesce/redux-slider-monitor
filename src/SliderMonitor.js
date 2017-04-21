@@ -1,4 +1,5 @@
-import React, { PropTypes, Component, PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import * as themes from 'redux-devtools-themes';
 import { ActionCreators } from 'redux-devtools';
 import { Toolbar, Slider, Button, SegmentedControl, Divider } from 'devui';
@@ -32,7 +33,7 @@ export default class SliderMonitor extends (PureComponent || Component) {
   };
 
   static defaultProps = {
-    select: (state) => state,
+    select: state => state,
     theme: 'nicinabox',
     preserveScrollTop: true,
     keyboardEnabled: true
@@ -97,6 +98,7 @@ export default class SliderMonitor extends (PureComponent || Component) {
       event.preventDefault();
       this.stepRight();
     }
+    return null;
   }
 
   handleSliderChange = (value) => {
@@ -132,11 +134,11 @@ export default class SliderMonitor extends (PureComponent || Component) {
       if (counter + 1 <= computedStates.length - 1) {
         dispatch(jumpToState(counter + 1));
       }
-      counter++;
+      counter += 1;
 
       if (counter >= computedStates.length - 1) {
         clearInterval(this.state.timer);
-        return this.setState({
+        this.setState({
           timer: undefined
         });
       }
@@ -169,7 +171,8 @@ export default class SliderMonitor extends (PureComponent || Component) {
         this.props.dispatch(jumpToState(this.props.currentStateIndex + 1));
 
         if (this.props.currentStateIndex >= this.props.computedStates.length - 1) {
-          return this.pauseReplay();
+          this.pauseReplay();
+          return;
         }
 
         timestampDiff = this.getLatestTimestampDiff(this.props.currentStateIndex);
@@ -192,9 +195,8 @@ export default class SliderMonitor extends (PureComponent || Component) {
     }
   }
 
-  getLatestTimestampDiff = (index) => {
-    return this.getTimestampOfStateIndex(index + 1) - this.getTimestampOfStateIndex(index);
-  }
+  getLatestTimestampDiff = index =>
+    this.getTimestampOfStateIndex(index + 1) - this.getTimestampOfStateIndex(index)
 
   getTimestampOfStateIndex = (stateIndex) => {
     const id = this.props.stagedActionIds[stateIndex];

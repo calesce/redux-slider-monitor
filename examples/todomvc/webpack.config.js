@@ -2,8 +2,15 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  devtool: 'eval',
+  devtool: 'eval-cheap-module-source-map',
+  devServer: {
+    host: 'localhost',
+    port: process.env.PORT || 3000,
+    historyApiFallback: true,
+    hot: true
+  },
   entry: [
+    'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
     './index'
@@ -15,30 +22,29 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   resolve: {
     alias: {
       'redux-slider-monitor': path.join(__dirname, '..', '..', 'src/SliderMonitor'),
-      'react': path.join(__dirname, 'node_modules', 'react'),
-      'react-dom': path.join(__dirname, 'node_modules', 'react-dom'),
-      'redux-devtools': path.join(__dirname, 'node_modules', 'redux-devtools')
+      'react': path.join(__dirname, '../../node_modules', 'react'),
+      'react-dom': path.join(__dirname, '../../node_modules', 'react-dom'),
+      'redux-devtools': path.join(__dirname, '../../node_modules', 'redux-devtools')
     },
-    extensions: ['', '.js']
+    extensions: ['.js']
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loaders: ['react-hot', 'babel'],
+      use: ['babel-loader'],
       exclude: /node_modules/,
-      include: __dirname
-    }, {
-      test: /\.js$/,
-      loaders: ['babel'],
-      include: path.join(__dirname, '..', '..', 'src')
+      include: [
+        __dirname,
+        path.join(__dirname, '..', '..', 'src')
+      ]
     }, {
       test: /\.css?$/,
-      loaders: ['style', 'raw'],
+      use: ['style-loader', 'raw-loader'],
       include: __dirname
     }]
   }

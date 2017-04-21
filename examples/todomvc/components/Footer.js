@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { SHOW_ALL, SHOW_MARKED, SHOW_UNMARKED } from '../constants/TodoFilters';
 
@@ -49,7 +50,8 @@ export default class Footer extends Component {
     const { filter: selectedFilter, onShow } = this.props;
 
     return (
-      <a className={classnames({ selected: filter === selectedFilter })}
+      <a
+        className={classnames({ selected: filter === selectedFilter })}
         style={{ cursor: 'hand' }}
         onClick={() => onShow(filter)}
       >
@@ -62,12 +64,14 @@ export default class Footer extends Component {
     const { markedCount, onClearMarked } = this.props;
     if (markedCount > 0) {
       return (
-        <button className='clear-completed'
+        <button
+          className='clear-completed'
           onClick={onClearMarked}
         >
           Clear completed
         </button>
       );
     }
+    return null;
   }
 }

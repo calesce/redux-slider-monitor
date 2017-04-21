@@ -1,18 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import TodoApp from './TodoApp';
 
-export default class Root extends Component {
-  static propTypes = {
-    store: PropTypes.object
-  };
+const Root = ({ store }) => (
+  <Provider store={store}>
+    <div>
+      <TodoApp />
+    </div>
+  </Provider>
+);
 
-  render() {
-    const { store } = this.props;
-    return (
-      <Provider store={store}>
-        <TodoApp />
-      </Provider>
-    );
-  }
-}
+Root.propTypes = {
+  store: PropTypes.object.isRequired
+};
+
+export default Root;
