@@ -8,10 +8,10 @@ import Root from './containers/Root';
 const store = configureStore();
 
 const rootEl = document.getElementById('root');
-const render = (Component) => {
+const render = () => {
   ReactDOM.render(
     <AppContainer>
-      <Component store={store} />
+      <Root store={store} />
     </AppContainer>,
     rootEl
   );
@@ -19,6 +19,5 @@ const render = (Component) => {
 
 render(Root);
 if (module.hot) {
-  /* eslint-disable global-require */
-  module.hot.accept('./containers/Root', () => render(require('./containers/Root').default));
+  module.hot.accept('./containers/Root', render);
 }
