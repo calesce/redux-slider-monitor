@@ -1,6 +1,6 @@
 import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'devui';
+import Button from 'devui/lib/Button';
 
 export default class SliderButton extends (PureComponent || Component) {
   static propTypes = {
