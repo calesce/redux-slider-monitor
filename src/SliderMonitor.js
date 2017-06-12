@@ -75,6 +75,7 @@ export default class SliderMonitor extends (PureComponent || Component) {
   }
 
   handleReset = () => {
+    this.pauseReplay();
     this.props.dispatch(reset());
   }
 
