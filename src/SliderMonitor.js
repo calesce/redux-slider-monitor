@@ -2,7 +2,10 @@ import React, { Component, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import * as themes from 'redux-devtools-themes';
 import { ActionCreators } from 'redux-devtools';
-import { Toolbar, Slider, Button, SegmentedControl, Divider } from 'devui';
+import { Toolbar, Divider } from 'devui/lib/Toolbar';
+import Slider from 'devui/lib/Slider';
+import Button from 'devui/lib/Button';
+import SegmentedControl from 'devui/lib/SegmentedControl';
 
 import reducer from './reducers';
 import SliderButton from './SliderButton';
