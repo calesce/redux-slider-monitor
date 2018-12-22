@@ -1,6 +1,6 @@
 {
   "name": "redux-slider-monitor",
-  "version": "2.0.0-1",
+  "version": "2.0.0-2",
   "description": "A custom monitor for replaying Redux actions that works similarly to a video player",
   "main": "lib/SliderMonitor.js",
   "scripts": {
