@@ -32,16 +32,16 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^4.0.0",
     "eslint-plugin-react": "^6.10.3",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "react-redux": "^5.0.4",
     "redux": "^3.0.0",
     "redux-devtools": "^3.0.0",
     "rimraf": "^2.3.4"
   },
   "peerDependencies": {
-    "react": "^0.14.0 || ^15.0.0",
-    "react-dom": "^0.14.0 || ^15.0.0",
+    "react": "^0.14.0 || ^15.0.0 || ^16.0.0-0",
+    "react-dom": "^0.14.0 || ^15.0.0 || ^16.0.0-0",
     "redux-devtools": "^3.0.0"
   },
   "dependencies": {
