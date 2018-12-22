@@ -2,6 +2,8 @@
 
 [![npm version](https://img.shields.io/npm/v/redux-slider-monitor.svg?style=flat-square)](https://www.npmjs.com/package/redux-slider-monitor)
 
+> This package was merged into [`redux-devtools` monorepo](https://github.com/reduxjs/redux-devtools). Please refer to that repository for the latest updates, issues and pull requests.
+
 A custom monitor for use with [Redux DevTools](https://github.com/gaearon/redux-devtools).
 
 It uses a slider based on [react-slider](https://github.com/mpowaga/react-slider) to slide between different recorded actions. It also features play/pause/step-through, which is inspired by some very cool [Elm](http://elm-lang.org/) [examples](http://elm-lang.org/blog/time-travel-made-easy).
